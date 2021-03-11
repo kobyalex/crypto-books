@@ -18,190 +18,200 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/********************************
- *
- *           CLASSES
- *
- ********************************/
-
-/*
-        "id": "bitcoin",
-        "name": "Bitcoin",
-        "symbol": "BTC",
-        "rank": "1",
-        "price_usd": "8883.34",
-        "price_btc": "1.0",
-        "24h_volume_usd": "8120150000.0",
-        "market_cap_usd": "150215280648",
-        "available_supply": "16909775.0",
-        "total_supply": "16909775.0",
-        "max_supply": "21000000.0",
-        "percent_change_1h": "0.17",
-        "percent_change_24h": "-5.98",
-        "percent_change_7d": "-19.33",
-        "last_updated": "1520626767",
-        "price_eur": "7207.65780912",
-        "24h_volume_eur": "6588429865.2",
-        "market_cap_eur": "121879871829"
+/* Sample:
+  "id": "bitcoin",
+  "name": "Bitcoin",
+  "symbol": "BTC",
+  "rank": "1",
+  "price_usd": "8883.34",
+  "price_btc": "1.0",
+  "24h_volume_usd": "8120150000.0",
+  "market_cap_usd": "150215280648",
+  "available_supply": "16909775.0",
+  "total_supply": "16909775.0",
+  "max_supply": "21000000.0",
+  "percent_change_1h": "0.17",
+  "percent_change_24h": "-5.98",
+  "percent_change_7d": "-19.33",
+  "last_updated": "1520626767",
+  "price_eur": "7207.65780912",
+  "24h_volume_eur": "6588429865.2",
+  "market_cap_eur": "121879871829"
 */
 
-/********************************
- *
- *           METHODS
- *
- ********************************/
-
-function getCryptoCompareApiKeyUrlSuffix() {
-    var apiKey = getSetting(6,2)
-    if(!isEmpty(apiKey)) {
-        return '&api_key=' + apiKey
-    } else {
-        return '';
-    }
+/**
+ * getApiKeyUrlSuffix()
+ */
+function getApiKeyUrlSuffix() {
+  var apiKey = getSetting(6, 2)
+  if (!isEmpty(apiKey)) {
+    return '&api_key=' + apiKey
+  } else {
+    return '';
+  }
 }
 
+/**
+ * getValueFromOhlcCryptoCompare()
+ */
 function getValueFromOhlcCryptoCompare(priceData) {
-    var candle = priceData['Data'][1]
-    var average = (candle.open + candle.close) / 2
-    return average;
+  var candle = priceData['Data'][1];
+  return (candle.open + candle.close) / 2;
 }
 
+/**
+ * fetchCryptoCompareRates()
+ */
 function fetchCryptoCompareRates(CryptoCurrencies, FiatCurrency, DateTime) {
+  var neededCurrencies;
+  var rates = [];
+  var cacheKey, cachedValue;
 
-    var neededCryptoCurrencies;
-    var rates = [ ];
-    var cacheKey, cachedValue;
+  var cacheKeySuffix = ""; // used for DateTime
 
-    var cacheKeySuffix = ""; // used for DateTime
+  if (!FiatCurrency) {
+    FiatCurrency = getFiatName();
+  }
 
-    if(!FiatCurrency) {
-        FiatCurrency = getFiatName();
+  if (!isEmpty(DateTime) && DateTime instanceof Date) {
+    // Note: API is only storing one value per day (not accurate unfortunately)
+    var strCacheDate = "T" + DateTime.getFullYear() + (DateTime.getMonth() + 1).padLeft(2) + DateTime.getDate().padLeft(2);
+    var dCacheDate = new Date(DateTime.getFullYear(), DateTime.getMonth(), DateTime.getDate(), DateTime.getHours() + 1, 0, 0);
+    cacheKeySuffix = strCacheDate;
+  }
+
+  // Get cached values
+  if (CryptoCurrencies instanceof Array) {
+    neededCurrencies = [];
+
+    for (var currencyIndex in CryptoCurrencies) {
+      var currency = CryptoCurrencies[currencyIndex];
+      cacheKey = "cc" + FiatCurrency + currency + cacheKeySuffix;
+      cachedValue = getCache(cacheKey);
+
+      if (cachedValue > 0) {
+        rates[currency] = cachedValue;
+
+      } else {
+        neededCurrencies.push(currency);
+      }
     }
+  } else {
+    cacheKey = "cc" + FiatCurrency + CryptoCurrencies + cacheKeySuffix;
+    cachedValue = getCache(cacheKey);
 
-    if(!isEmpty(DateTime) && DateTime instanceof Date) {
-        // Note: API is only storing one value per day (not accurate unfortunately)
-        var strCacheDate = "T"+DateTime.getFullYear()+(DateTime.getMonth()+1).padLeft(2)+DateTime.getDate().padLeft(2);
-        var dCacheDate = new Date(DateTime.getFullYear(), DateTime.getMonth(), DateTime.getDate(), DateTime.getHours()+1, 0, 0);
-        cacheKeySuffix = strCacheDate;
-    }
+    if (isNumeric(cachedValue) && cachedValue > 0) {
+      rates[CryptoCurrencies] = cachedValue;
 
-    // Get cached values
-    if(CryptoCurrencies instanceof Array) {
-        neededCryptoCurrencies = [ ];
-
-        for(var currencyIndex in CryptoCurrencies) {
-            var currency=CryptoCurrencies[currencyIndex];
-            cacheKey = "cc"+FiatCurrency+currency+cacheKeySuffix;
-            cachedValue = getCache(cacheKey);
-            if(cachedValue>0) {
-                rates[currency] = cachedValue;
-            } else {
-                neededCryptoCurrencies.push(currency);
-            }
-        }
     } else {
-        cacheKey = "cc"+FiatCurrency+CryptoCurrencies+cacheKeySuffix;
-        cachedValue = getCache(cacheKey);
-        if(isNumeric(cachedValue) && cachedValue>0) {
-            rates[CryptoCurrencies] = cachedValue;
-        } else if(cachedValue=="notfound") {
-            return null;
-        } else {
-            neededCryptoCurrencies = CryptoCurrencies;
+      neededCurrencies = CryptoCurrencies;
+    }
+  }
+
+  // Start getting data from API
+  if (neededCurrencies != undefined) {
+    var urls = [];
+
+    if (neededCurrencies instanceof Array) {
+      if (!isEmpty(DateTime) && DateTime instanceof Date) {
+        for (var currencyIndex in neededCurrencies) {
+          var currency = neededCurrencies[currencyIndex];
+          urls.push("https://min-api.cryptocompare.com/data/histohour?limit=1&fsym=" + currency + "&tsym=" + FiatCurrency + "&toTs=" + (dCacheDate.getTime() / 1000) + getApiKeyUrlSuffix());
         }
+      } else {
+        urls.push("https://min-api.cryptocompare.com/data/pricemulti?fsyms=" + neededCurrencies.join(',') + "&tsyms=" + FiatCurrency + getApiKeyUrlSuffix());
+      }
+
+    } else {
+      if (!isEmpty(DateTime) && DateTime instanceof Date) {
+        urls.push("https://min-api.cryptocompare.com/data/histohour?limit=1&fsym=" + neededCurrencies + "&tsym=" + FiatCurrency + "&toTs=" + (dCacheDate.getTime() / 1000) + getApiKeyUrlSuffix());
+      } else {
+        urls.push("https://min-api.cryptocompare.com/data/price?fsym=" + neededCurrencies + "&tsyms=" + FiatCurrency + getApiKeyUrlSuffix());
+      }
     }
 
-    // Start getting data from API
-    if(neededCryptoCurrencies!=undefined) {
-        var urls = [ ];
-        if(neededCryptoCurrencies instanceof Array) {
-            if(!isEmpty(DateTime) && DateTime instanceof Date) {
-                for(var currencyIndex in neededCryptoCurrencies) {
-                    var currency=neededCryptoCurrencies[currencyIndex];
-                    urls.push("https://min-api.cryptocompare.com/data/histohour?limit=1&fsym=" + currency + "&tsym=" + FiatCurrency + "&toTs=" + (dCacheDate.getTime() / 1000) + getCryptoCompareApiKeyUrlSuffix());
-                }
-            } else {
-                urls.push("https://min-api.cryptocompare.com/data/pricemulti?fsyms=" + neededCryptoCurrencies.join(',') + "&tsyms=" + FiatCurrency + getCryptoCompareApiKeyUrlSuffix());
+    for (var url in urls) {
+      var returnText = fetchUrl(urls[url]);
+      //writeLog(new Date(),"fetchCryptoCompareRates","fetchUrl: " + urls[url]);
+
+      if (returnText == "") {
+        writeLog(new Date(),"fetchCryptoCompareRates","Empty: " + JSON.stringify(neededCurrencies));
+        return null;
+      }
+
+      var priceData = JSON.parse(returnText);
+      if (priceData.Response == "Error") {
+        writeLog(new Date(),"fetchCryptoCompareRates","Error: " + priceData.Message);
+
+        // Save to cache if no data found to avoid further searches
+        if (priceData.Message.indexOf("no data") !== -1 && isString(neededCurrencies)) {
+          cacheKey = "cc" + FiatCurrency + neededCurrencies + cacheKeySuffix;
+          setCache(cacheKey, "notfound");
+        }
+        return null;
+
+      } else {
+        //writeLog(new Date(),"fetchCryptoCompareRates","Response: " + JSON.stringify(priceData));
+
+        if (neededCurrencies instanceof Array) {
+          for (var cryptoIndex in neededCurrencies) {
+            var CryptoCurrency = neededCurrencies[cryptoIndex];
+
+            if (priceData[CryptoCurrency][FiatCurrency] > 0) {
+              rates[CryptoCurrency] = priceData[CryptoCurrency][FiatCurrency];
+
+              // Save to cache
+              cacheKey = "cc" + FiatCurrency + CryptoCurrency + cacheKeySuffix;
+              setCache(cacheKey, rates[CryptoCurrency]);
             }
+          }
+
         } else {
-            if(!isEmpty(DateTime) && DateTime instanceof Date) {
-                urls.push("https://min-api.cryptocompare.com/data/histohour?limit=1&fsym=" + neededCryptoCurrencies + "&tsym=" + FiatCurrency + "&toTs=" + (dCacheDate.getTime() / 1000) + getCryptoCompareApiKeyUrlSuffix());
-            } else {
-                urls.push("https://min-api.cryptocompare.com/data/price?fsym=" + neededCryptoCurrencies + "&tsyms=" + FiatCurrency + getCryptoCompareApiKeyUrlSuffix());
-            }
+          if (!isEmpty(DateTime) && DateTime instanceof Date) {
+            rates[neededCurrencies] = getValueFromOhlcCryptoCompare(priceData);
+          } else if (priceData[FiatCurrency] > 0) {
+            rates[neededCurrencies] = priceData[FiatCurrency];
+          }
+
+          // Save to cache
+          if (rates[neededCurrencies] > 0) {
+            cacheKey = "cc" + FiatCurrency + neededCurrencies + cacheKeySuffix;
+            setCache(cacheKey, rates[neededCurrencies]);
+          }
         }
-
-        for(var url in urls) {
-            var returnText = fetchUrl(urls[url]);
-            if(returnText=="") {
-                //writeLog(new Date(),"fetchCryptoCompareRates","CryptoCompare Server Response is empty for " + neededCryptoCurrencies);
-                return null;
-            }
-            var priceData = JSON.parse(returnText);
-            if(priceData.Response == "Error") {
-                //writeLog(new Date(),"fetchCryptoCompareRates","CryptoCompare Server Response error: " + priceData.Message);
-
-                // Save to cache if no data found to avoid further searches
-                if(priceData.Message.indexOf("no data") !== -1 && isString(neededCryptoCurrencies)) {
-                    cacheKey = "cc"+FiatCurrency+neededCryptoCurrencies+cacheKeySuffix;
-                    setCache(cacheKey,"notfound");
-                }
-                return null;
-            } else {
-                if(neededCryptoCurrencies instanceof Array) {
-                    for(var cryptoIndex in neededCryptoCurrencies) {
-                        var CryptoCurrency = neededCryptoCurrencies[cryptoIndex];
-
-                        if(priceData[CryptoCurrency][FiatCurrency]>0) {
-                            rates[CryptoCurrency] = priceData[CryptoCurrency][FiatCurrency];
-
-                            // Save to cache
-                            cacheKey = "cc"+FiatCurrency+CryptoCurrency+cacheKeySuffix;
-                            setCache(cacheKey,rates[CryptoCurrency]);
-                        }
-                    }
-                } else {
-                    if(!isEmpty(DateTime) && DateTime instanceof Date) {
-                        rates[neededCryptoCurrencies] = getValueFromOhlcCryptoCompare(priceData);
-                    } else if(priceData[FiatCurrency]>0) {
-                        rates[neededCryptoCurrencies] = priceData[FiatCurrency];
-                    }
-
-                    // Save to cache
-                    if(rates[neededCryptoCurrencies]>0) {
-                        cacheKey = "cc"+FiatCurrency+neededCryptoCurrencies+cacheKeySuffix;
-                        setCache(cacheKey,rates[neededCryptoCurrencies]);
-                    }
-                }
-            }
-        }
-
+      }
     }
+  }
 
-    return rates;
+  return rates;
 }
 
-
+/**
+ * getCryptoFiatRate()
+ */
 function getCryptoFiatRate(currency, DateTime, FiatCurrency) {
+  if (!FiatCurrency) {
+    FiatCurrency = getFiatName();
+  }
 
-    if(!FiatCurrency) {
-        FiatCurrency = getFiatName();
-    }
+  // CryptoCompare
+  var serviceCurrencyName = getFinalCoinName("CryptoCompare", currency);
+  var cc = fetchCryptoCompareRates(serviceCurrencyName, FiatCurrency, DateTime);
 
-    // Second Fallback CryptoCompare
-    var serviceCurrencyName = getFinalCoinName("CryptoCompare",currency);
-    var cc = fetchCryptoCompareRates(serviceCurrencyName, FiatCurrency, DateTime);
+  if (!isEmpty(cc) && isNumeric(cc[serviceCurrencyName])) {
+    //writeLog(new Date(),"getCryptoFiatRate","CryptoCompareRates for [" + serviceCurrencyName + "]: " + cc[serviceCurrencyName]);
+    return parseFloat(cc[serviceCurrencyName]);
 
-    if(!isEmpty(cc) && isNumeric(cc[currency])) {
-        return parseFloat(cc[currency]);
+  } else {
+    // FallbackRateFiat
+    var localCurrencyPrice = findValue("Coins", "FallbackRateFiat", "Currency", serviceCurrencyName, false);
+
+    writeLog(new Date(),"getCryptoFiatRate","FallbackRateFiat for [" + serviceCurrencyName + "]: " + localCurrencyPrice);
+    if (isNumeric(localCurrencyPrice)) {
+      return parseFloat(localCurrencyPrice);
+
     } else {
-        // Third Fallback is Price in Sheet
-        var localCurrencyPrice = findValue("Coin Settings", "FallbackRateFiat", "Currency", currency, true);
-        if(isNumeric(localCurrencyPrice)) {
-            return parseFloat(localCurrencyPrice);
-        } else {
-            return null;
-        }
+      return 0;
     }
-
+  }
 }
