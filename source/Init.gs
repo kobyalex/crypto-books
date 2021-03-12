@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
 
-  ui.createMenu('Cryptocurrency')
+  ui.createMenu('Crypto')
     .addItem('Add fiat rates', 'menuAddFiatRates')
     .addItem('Update portfolio', 'menuUpdatePortfolio')
     .addToUi();

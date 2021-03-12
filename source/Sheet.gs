@@ -213,121 +213,14 @@ function updateTradesFiatRates() {
 }
 
 /**
- * processCoinValue()
- */
-function processCoinValue(typeBuySell, trade, coins, accounts, fiatCurrency) {
-  var Buy = "Buy";
-  var Sell = "Sell";
-  var Fee = "Fee";
-  var currency = (trade[typeBuySell + "Currency"] != "" ? trade[typeBuySell + "Currency"] : "");
-
-  if (typeBuySell != Buy && typeBuySell != Sell && typeBuySell != Fee) {
-    writeLog(new Date(), "processCoinValue", "Problem on currency " + currency + ": Type is not value 'Buy' nor 'Sell' nor 'Fee' (value is '" + typeBuySell + "')");
-    return false;
-  }
-
-  if (currency != "" && currency != undefined) {
-
-    // Coin profit
-    var valueCrypto = isNumeric(trade[typeBuySell + "Value"]) ? parseFloat(trade[typeBuySell + "Value"]) : 0.00;
-    var valueFiat = isNumeric(trade[typeBuySell + "FiatValue"]) ? parseFloat(trade[typeBuySell + "FiatValue"]) : 0.00;
-
-    var coin;
-
-    if (!coins.contains(currency)) {
-      var currentPriceFiat = 0.0;
-
-      if (currency == fiatCurrency) {
-        currentPriceFiat = 1.0;
-
-      } else {
-        // Get rates online (if possible)
-        currentPriceFiat = getCryptoFiatRate(currency);
-      }
-
-      if (currentPriceFiat == 0.0 || !isNumeric(currentPriceFiat)) {
-        currentPriceFiat = null;
-      }
-
-      // Initiate new coin
-      coin = new CoinValue();
-      coin.CoinCode = currency;
-      coin.CurrentCoinPriceFiat = currentPriceFiat;
-      coins.set(currency, coin);
-    }
-
-    coin = coins.get(currency);
-
-    if (typeBuySell == Buy) {
-      // Add all buys (count and fiat value)
-      coin.CoinCount += valueCrypto;
-      coin.PayedCoinPriceTotalFiat += valueFiat;
-
-    } else if (typeBuySell == Sell) {
-      // Substract all sells (count and fiat value)
-      coin.CoinCount -= valueCrypto;
-      coin.PayedCoinPriceTotalFiat -= valueFiat;
-
-    } else if (typeBuySell == Fee) {
-      // Fee substract doesnt reduce the payed coin price (we include the fee in the coin price)
-      coin.CoinCount -= valueCrypto;
-    }
-
-    if (coin.CurrentCoinPriceFiat == null || coin.CoinCount === 0) {
-      coin.CurrentCoinPriceTotalFiat = null;
-      coin.ProfitLossFiat = null;
-      coin.ProfitLossPercent = null;
-    } else {
-      coin.CurrentCoinPriceTotalFiat = coin.CurrentCoinPriceFiat * coin.CoinCount;
-      coin.ProfitLossFiat = currency != fiatCurrency ? coin.CurrentCoinPriceTotalFiat - coin.PayedCoinPriceTotalFiat : null;
-      coin.ProfitLossPercent = coin.PayedCoinPriceTotalFiat != 0 ? ((coin.ProfitLossFiat * 100) / coin.PayedCoinPriceTotalFiat) / 100 : null;
-    }
-
-    if (coin.CoinCount == 0) {
-      coins.remove(currency);
-    } else {
-      coin.AverageCoinPriceFiat = coin.PayedCoinPriceTotalFiat / coin.CoinCount;
-    }
-
-    // Account Holdings
-    if (valueCrypto > 0) {
-      var accountID = trade.Account + '-' + currency;
-      if (!accounts.contains(accountID)) {
-        accounts.set(accountID, new AccountValue([
-          trade.Account,
-          trade.Exchange,
-          trade.Wallet,
-          currency,
-          0.0
-        ]));
-      }
-
-      var account = accounts.get(accountID);
-
-      if (typeBuySell == Buy) {
-        account.Value += valueCrypto;
-      } else if (typeBuySell == Sell || typeBuySell == Fee) {
-        account.Value -= valueCrypto;
-      }
-
-      if (account.Value < 0.0001 && account.Value > -0.0001) { // Exclude very small amounts (some exchange are not able to widthdraw them)
-        accounts.remove(accountID);
-      }
-    }
-
-    return true;
-  }
-}
-
-/**
  * updatePortofolio()
  */
 function updatePortofolio() {
   var spreadsheet = SpreadsheetApp.getActive();
-  var coinValueSheet = spreadsheet.getSheetByName("🔒 Portfolio Values");
-  var accountHoldingsSheet = spreadsheet.getSheetByName("🔒 Account Holdings");
+  var coinValueSheet = spreadsheet.getSheetByName("🔒 Portfolio");
+  var accountHoldingsSheet = spreadsheet.getSheetByName("🔒 Holdings");
   var tradeSheet = spreadsheet.getSheetByName("Trades");
-  var investmentSheet = spreadsheet.getSheetByName("🔒 Profit Overview");
+  var investmentSheet = spreadsheet.getSheetByName("🔒 Profit");
   var tradeValues = tradeSheet.getDataRange().getValues();
 
   var coins = new Dictionary();
@@ -381,6 +274,117 @@ function updatePortofolio() {
   });
   accountHoldingsSheet.getRange(2, 1, accountHoldingsSheet.getLastRow(), accountHoldingsSheet.getLastColumn()).setValue(null); // Clear all
   accountHoldingsSheet.getRange(2, 1, accountRows.length, 6).setValues(accountRows); // Write values
+}
+
+/**
+ * processCoinValue()
+ */
+function processCoinValue(typeValue, trade, coins, accounts, fiatCurrency) {
+  var Buy = "Buy";
+  var Sell = "Sell";
+  var Fee = "Fee";
+
+  var currency = (trade[typeValue + "Currency"] != "" ? trade[typeValue + "Currency"] : "");
+
+  if (typeValue != Buy && typeValue != Sell && typeValue != Fee) {
+    writeLog(new Date(), "processCoinValue", "Problem on currency " + currency + ": Type is not value 'Buy' nor 'Sell' nor 'Fee' (value is '" + typeValue + "')");
+    return false;
+  }
+
+  if (currency != "" && currency != undefined) {
+
+    // Coin profit
+    var valueCrypto = isNumeric(trade[typeValue + "Value"]) ? parseFloat(trade[typeValue + "Value"]) : 0.00;
+    var valueFiat = isNumeric(trade[typeValue + "FiatValue"]) ? parseFloat(trade[typeValue + "FiatValue"]) : 0.00;
+
+    var coin;
+
+    if (!coins.contains(currency)) {
+      var currentPriceFiat = 0.0;
+
+      if (currency == fiatCurrency) {
+        currentPriceFiat = 1.0;
+
+      } else {
+        // Get rates online (if possible)
+        currentPriceFiat = getCryptoFiatRate(currency);
+      }
+
+      if (currentPriceFiat == 0.0 || !isNumeric(currentPriceFiat)) {
+        currentPriceFiat = null;
+      }
+
+      // Initiate new coin
+      coin = new CoinValue();
+      coin.CoinCode = currency;
+      coin.CurrentCoinPriceFiat = currentPriceFiat;
+      coins.set(currency, coin);
+    }
+
+    coin = coins.get(currency);
+
+    if (typeValue == Buy) {
+      // Add all buys (count and fiat value)
+      coin.CoinCount += valueCrypto;
+      coin.PayedCoinPriceTotalFiat += valueFiat;
+
+    } else if (typeValue == Sell) {
+      // Substract all sells (count and fiat value)
+      coin.CoinCount -= valueCrypto;
+      coin.PayedCoinPriceTotalFiat -= valueFiat;
+
+    } else if (typeValue == Fee) {
+      // Fee substract doesnt reduce the payed coin price (we include the fee in the coin price)
+      coin.CoinCount -= valueCrypto;
+      coin.PayedCoinPriceTotalFiat -= valueFiat;
+    }
+
+    if (coin.CurrentCoinPriceFiat == null || coin.CoinCount === 0) {
+      coin.CurrentCoinPriceTotalFiat = null;
+      coin.ProfitLossFiat = null;
+      coin.ProfitLossPercent = null;
+    } else {
+      coin.CurrentCoinPriceTotalFiat = coin.CurrentCoinPriceFiat * coin.CoinCount;
+      coin.ProfitLossFiat = currency != fiatCurrency ? coin.CurrentCoinPriceTotalFiat - coin.PayedCoinPriceTotalFiat : null;
+      coin.ProfitLossPercent = coin.PayedCoinPriceTotalFiat != 0 ? ((coin.ProfitLossFiat * 100) / coin.PayedCoinPriceTotalFiat) / 100 : null;
+    }
+
+    if (coin.CoinCount < 0.0000001 && coin.CoinCount > -0.0000001) {
+      coins.remove(currency);
+
+    } else {
+      coin.AverageCoinPriceFiat = coin.PayedCoinPriceTotalFiat / coin.CoinCount;
+    }
+
+    // Account Holdings
+    if (valueCrypto > 0) {
+      var accountID = trade.Account + '-' + currency;
+      if (!accounts.contains(accountID)) {
+        accounts.set(accountID, new AccountValue([
+          trade.Account,
+          trade.Exchange,
+          trade.Wallet,
+          currency,
+          0.0
+        ]));
+      }
+
+      var account = accounts.get(accountID);
+
+      if (typeValue == Buy) {
+        account.Value += valueCrypto;
+
+      } else if (typeValue == Sell || typeValue == Fee) {
+        account.Value -= valueCrypto;
+      }
+
+      if (account.Value < 0.001 && account.Value > -0.001) { // Exclude very small amounts (some exchange are not able to widthdraw them)
+        accounts.remove(accountID);
+      }
+    }
+
+    return true;
+  }
 }
 
 /**
