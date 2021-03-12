@@ -1,18 +1,41 @@
-# About fork
-This is a fork of the original work of [TechupBusiness](info@techupbusiness.com).
+This is a fork of the original **Crypto portfolio tracker for Google Sheets** work of [TechupBusiness](info@techupbusiness.com).
+Any and all changes are hereby aligned to the same license conditions.
+
+
+# CryptoBooks
+This is a fork of the original **Crypto portfolio tracker for Google Sheets** work of **TechupBusiness**.
 Any and all changes are hereby aligned to the same license conditions.
 
 A code of conduct has been provided for the purpose of this fork, please read it before raising any issues of any kind.
 
 
-## Change list
+# Google Sheet
+[CryptoBooks Google Sheet](https://docs.google.com/spreadsheets/d/1e5owlgcDlpt8PJhtJkwiKRHzZtyYzyPl7gJEgNtAA3o/)
+is a demo Google Sheet that deploys this code.
 
+In order to get started, make a copy of it in your Drive and read the
+[Medium](https://mindup.medium.com/free-crypto-portfolio-tracker-based-on-google-sheets-ef76070ec325)
+article of the original developer.
+
+
+# Screenshots
+![Dashboard](assets/dashboard.jpg "Dashboard")
+
+![Portfolio](assets/portfolio.jpg "Portfolio")
+
+![Trades](assets/trades.jpg "Trades")
+
+
+## Change list
 - Version 1.1.0
     - Refactored the code a bit.
     - Added more logging (some disabled).
     - Fixed buggy calculations.
     - Added additional data type validations.
     - Anything else I forgot.
+
+- Version 1.1.1
+    - Fixed float leftovers for liquidated coins.
 
 
 ## Planned updates
@@ -23,15 +46,3 @@ Don't hold your breath though.
 - Refactor the code further.
 - Add more APIs.
 - Improve performance.
-
-
-# Crypto portfolio tracker for Google Sheets
-These are the Google Apps Script files for the free portfolio tracker using Google Sheets. 
-
-Please see [Free Crypto Portfolio Tracker based on Google Sheets on Medium](https://medium.com/@techupbusiness/free-crypto-portfolio-tracker-based-on-google-sheets-ef76070ec325).
-
-![Crypto Tracker Screenshot](crypto-tracker-screenshot.png "Crypto Tracker Screenshot")
-
-
-## Advisory notice
-You can't run this code directly and independent of [its Google Sheet](https://medium.com/@techupbusiness/free-crypto-portfolio-tracker-based-on-google-sheets-ef76070ec325).
