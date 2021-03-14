@@ -37,6 +37,11 @@ article of the original developer.
 - Version 1.1.1
     - Fixed float leftovers for liquidated coins.
 
+- Version 1.2.0
+    - Removed Profit sheet and loops.
+    - Added profit details to Dashboard.
+    - Added new graphs to Dashboard sheet.
+
 
 ## Planned updates
 Don't hold your breath though.

@@ -220,12 +220,10 @@ function updatePortofolio() {
   var coinValueSheet = spreadsheet.getSheetByName("🔒 Portfolio");
   var accountHoldingsSheet = spreadsheet.getSheetByName("🔒 Holdings");
   var tradeSheet = spreadsheet.getSheetByName("Trades");
-  var investmentSheet = spreadsheet.getSheetByName("🔒 Profit");
   var tradeValues = tradeSheet.getDataRange().getValues();
 
   var coins = new Dictionary();
   var accounts = new Dictionary();
-  var overviewFiatInvest = 0.0;
   var fiatCurrency = getFiatName();
 
   for (var i = 1; i < tradeValues.length; i++) {
@@ -234,8 +232,6 @@ function updatePortofolio() {
     processCoinValue("Buy", trade, coins, accounts, fiatCurrency);
     processCoinValue("Sell", trade, coins, accounts, fiatCurrency);
     processCoinValue("Fee", trade, coins, accounts, fiatCurrency);
-
-    overviewFiatInvest = calculateFiatInvestOverview(trade, overviewFiatInvest, fiatCurrency);
   } // end for
 
   // Write profit/loss data to sheet
@@ -244,17 +240,6 @@ function updatePortofolio() {
   });
   coinValueSheet.getRange(2, 1, coinValueSheet.getLastRow(), coinValueSheet.getLastColumn()).setValue(null); // Clear all
   coinValueSheet.getRange(2, 1, portfolioRows.length, 8).setValues(portfolioRows); // Write values
-
-  // Write investment summary
-  var investmentValue = 0.0;
-  var arrCoins = coins.toArray();
-  for (var c in arrCoins) {
-    if (arrCoins[c].CoinCode != fiatCurrency && isNumeric(arrCoins[c].ProfitLossFiat)) {
-      investmentValue += parseFloat(arrCoins[c].CurrentCoinPriceTotalFiat);
-    }
-  }
-  investmentSheet.getRange(2, 2).setValue(overviewFiatInvest);
-  investmentSheet.getRange(3, 2).setValue(investmentValue);
 
   // Get fiat rates for account values
   var arrAccounts = accounts.toArray()
@@ -385,28 +370,4 @@ function processCoinValue(typeValue, trade, coins, accounts, fiatCurrency) {
 
     return true;
   }
-}
-
-/**
- * calculateFiatInvestOverview()
- */
-function calculateFiatInvestOverview(trade, overviewFiatInvest, fiatCurrency) {
-  if (/*trade.BuyCurrency == fiatCurrency &&*/ trade.BuyValue > 0 && (trade.Type == "Deposit" || trade.Type == "Buy" || trade.Type == "Gift") && isNumeric(trade.BuyFiatValue)) {
-    overviewFiatInvest += trade.BuyFiatValue;
-  }
-  if (/*trade.SellCurrency == fiatCurrency &&*/ trade.SellValue > 0 && (trade.Type == "Withdraw" || trade.Type == "Gift") && isNumeric(trade.SellFiatValue)) {
-    overviewFiatInvest -= trade.SellFiatValue;
-  }
-
-  // Substract some special cases (investment for others)
-  if (trade.Type == "Gift" && trade.SellCurrency != fiatCurrency && trade.SellFiatValue > 0) {
-    if (isNumeric(trade.SellFiatValue)) {
-      overviewFiatInvest -= trade.SellFiatValue;
-    }
-    if (isNumeric(trade.FeeFiatValue)) {
-      overviewFiatInvest -= trade.FeeFiatValue;
-    }
-  }
-
-  return overviewFiatInvest;
 }
