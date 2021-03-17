@@ -42,6 +42,11 @@ article of the original developer.
     - Added profit details to Dashboard.
     - Added new graphs to Dashboard sheet.
 
+- Version 1.2.1
+    - Disabled API calls without a key.
+    - Changed the recommended ordering A-Z for mathematical sense
+    - Improved defaults.
+
 
 ## Planned updates
 Don't hold your breath though.

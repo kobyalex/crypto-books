@@ -258,7 +258,10 @@ function updatePortofolio() {
     return value.toArray();
   });
   accountHoldingsSheet.getRange(2, 1, accountHoldingsSheet.getLastRow(), accountHoldingsSheet.getLastColumn()).setValue(null); // Clear all
-  accountHoldingsSheet.getRange(2, 1, accountRows.length, 6).setValues(accountRows); // Write values
+
+  if (accountRows.length > 0) {
+    accountHoldingsSheet.getRange(2, 1, accountRows.length, 6).setValues(accountRows); // Write values
+  }
 }
 
 /**
@@ -279,24 +282,23 @@ function processCoinValue(typeValue, trade, coins, accounts, fiatCurrency) {
   if (currency != "" && currency != undefined) {
 
     // Coin profit
-    var valueCrypto = isNumeric(trade[typeValue + "Value"]) ? parseFloat(trade[typeValue + "Value"]) : 0.00;
-    var valueFiat = isNumeric(trade[typeValue + "FiatValue"]) ? parseFloat(trade[typeValue + "FiatValue"]) : 0.00;
+    var valueCrypto = isNumeric(trade[typeValue + "Value"]) ? parseFloat(trade[typeValue + "Value"]) : 0;
+    var valueFiat = isNumeric(trade[typeValue + "FiatValue"]) ? parseFloat(trade[typeValue + "FiatValue"]) : 0;
 
     var coin;
-
     if (!coins.contains(currency)) {
-      var currentPriceFiat = 0.0;
+      var currentPriceFiat = 0;
 
       if (currency == fiatCurrency) {
-        currentPriceFiat = 1.0;
+        currentPriceFiat = 1;
 
       } else {
         // Get rates online (if possible)
         currentPriceFiat = getCryptoFiatRate(currency);
       }
 
-      if (currentPriceFiat == 0.0 || !isNumeric(currentPriceFiat)) {
-        currentPriceFiat = null;
+      if (!isNumeric(currentPriceFiat)) {
+        currentPriceFiat = 0;
       }
 
       // Initiate new coin
@@ -311,28 +313,29 @@ function processCoinValue(typeValue, trade, coins, accounts, fiatCurrency) {
     if (typeValue == Buy) {
       // Add all buys (count and fiat value)
       coin.CoinCount += valueCrypto;
-      coin.PayedCoinPriceTotalFiat += valueFiat;
+      if (valueFiat > 0) coin.PayedCoinPriceTotalFiat += valueFiat;
 
     } else if (typeValue == Sell) {
       // Substract all sells (count and fiat value)
       coin.CoinCount -= valueCrypto;
-      coin.PayedCoinPriceTotalFiat -= valueFiat;
+      if (valueFiat > 0) coin.PayedCoinPriceTotalFiat -= valueFiat;
 
     } else if (typeValue == Fee) {
       // Fee substract doesnt reduce the payed coin price (we include the fee in the coin price)
       coin.CoinCount -= valueCrypto;
-      coin.PayedCoinPriceTotalFiat -= valueFiat;
+      if (valueFiat > 0) coin.PayedCoinPriceTotalFiat -= valueFiat;
     }
 
     if (coin.CurrentCoinPriceFiat == null || coin.CoinCount === 0) {
-      coin.CurrentCoinPriceTotalFiat = null;
-      coin.ProfitLossFiat = null;
-      coin.ProfitLossPercent = null;
+      coin.CurrentCoinPriceTotalFiat = 0;
+      coin.ProfitLossFiat = 0;
+      coin.ProfitLossPercent = 0;
     } else {
       coin.CurrentCoinPriceTotalFiat = coin.CurrentCoinPriceFiat * coin.CoinCount;
-      coin.ProfitLossFiat = currency != fiatCurrency ? coin.CurrentCoinPriceTotalFiat - coin.PayedCoinPriceTotalFiat : null;
-      coin.ProfitLossPercent = coin.PayedCoinPriceTotalFiat != 0 ? ((coin.ProfitLossFiat * 100) / coin.PayedCoinPriceTotalFiat) / 100 : null;
+      coin.ProfitLossFiat = currency != fiatCurrency ? coin.CurrentCoinPriceTotalFiat - coin.PayedCoinPriceTotalFiat : 0;
+      coin.ProfitLossPercent = coin.PayedCoinPriceTotalFiat > 0 ? ((coin.ProfitLossFiat * 100) / coin.PayedCoinPriceTotalFiat) / 100 : 0;
     }
+
 
     if (coin.CoinCount < 0.0000001 && coin.CoinCount > -0.0000001) {
       coins.remove(currency);
@@ -342,7 +345,7 @@ function processCoinValue(typeValue, trade, coins, accounts, fiatCurrency) {
     }
 
     // Account Holdings
-    if (valueCrypto > 0) {
+    if (valueCrypto > 0 && !isEmpty(trade.Account)) {
       var accountID = trade.Account + '-' + currency;
       if (!accounts.contains(accountID)) {
         accounts.set(accountID, new AccountValue([

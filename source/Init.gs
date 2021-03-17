@@ -37,6 +37,13 @@ function onOpen() {
 function menuAddFiatRates() {
   var ui = SpreadsheetApp.getUi();
 
+  if (!isApiEnabled()) {
+    var result = ui.alert(
+      'API key required!',
+      ui.ButtonSet.OK);
+    return;
+  }
+
   var result = ui.alert(
     'Do you want to populate FIAT values for your trades?',
     ui.ButtonSet.OK_CANCEL);
@@ -54,7 +61,7 @@ function menuUpdatePortfolio() {
   var ui = SpreadsheetApp.getUi();
 
   var result = ui.alert(
-    'Did you sort the Trades sheet by date Z-A?',
+    'Did you sort the Trades sheet by date A-Z?',
     ui.ButtonSet.OK_CANCEL
   );
 

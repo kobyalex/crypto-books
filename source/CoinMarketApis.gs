@@ -40,6 +40,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
+ * isApiEnabled()
+ */
+function isApiEnabled() {
+  return !isEmpty(getSetting(6, 2));
+}
+
+/**
  * getApiKeyUrlSuffix()
  */
 function getApiKeyUrlSuffix() {
