@@ -1,73 +1,51 @@
 /**
  * @OnlyCurrentDoc
- */
-
-/*
-Copyright (C) 2018 TechupBusiness (info@techupbusiness.com)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/**
+ *
  * Initialize
  */
 function onOpen() {
-  var ui = SpreadsheetApp.getUi();
+    var ui = SpreadsheetApp.getUi();
 
-  ui.createMenu('Crypto')
-    .addItem('Add fiat rates', 'menuAddFiatRates')
-    .addItem('Update portfolio', 'menuUpdatePortfolio')
-    .addToUi();
+    ui.createMenu('Crypto')
+      .addItem('Update coins', 'menuUpdateCoins')
+      .addItem('Add fiat values', 'menuAddFiatValues')
+      .addToUi();
+
+    enableCache();
 }
 
 /**
- * menuAddFiatRates()
+ * Update Coins sheet.
  */
-function menuAddFiatRates() {
-  var ui = SpreadsheetApp.getUi();
+function menuUpdateCoins() {
+    var ui = SpreadsheetApp.getUi();
 
-  if (!isApiEnabled()) {
     var result = ui.alert(
-      'API key required!',
-      ui.ButtonSet.OK);
-    return;
-  }
+      'Do you want to update Coins sheet?',
+      ui.ButtonSet.OK_CANCEL);
 
-  var result = ui.alert(
-    'Do you want to populate FIAT values for your trades?',
-    ui.ButtonSet.OK_CANCEL);
-
-  if (result == ui.Button.OK) {
-    updateTradesFiatRates();
-    ui.alert('Finished populating fiate rates!');
-  }
+    if (result == ui.Button.OK) {
+        var ok = processUpdateCoins();
+        if (ok) {
+            ui.alert('Finished updating coins!');
+        } else {
+            ui.alert('Error updating coins!');
+        }
+    }
 }
 
 /**
- * menuUpdatePortfolio()
+ * Add fiat values to Trades sheet.
  */
-function menuUpdatePortfolio() {
-  var ui = SpreadsheetApp.getUi();
+function menuAddFiatValues() {
+    var ui = SpreadsheetApp.getUi();
 
-  var result = ui.alert(
-    'Did you sort the Trades sheet by date A-Z?',
-    ui.ButtonSet.OK_CANCEL
-  );
+    var result = ui.alert(
+      'Do you want to populate FIAT values in Trades sheet?',
+      ui.ButtonSet.OK_CANCEL);
 
-  // Process the user's response.
-  if (result == ui.Button.OK) {
-    updatePortofolio();
-    ui.alert('Finished report!');
-  }
+    if (result == ui.Button.OK) {
+        addFiatValues();
+        ui.alert('Finished populating fiat rates!');
+    }
 }

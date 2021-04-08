@@ -1,21 +1,23 @@
-This is a fork of the original **Crypto portfolio tracker for Google Sheets** work of [TechupBusiness](info@techupbusiness.com).
-Any and all changes are hereby aligned to the same license conditions.
+_This is a fork of the original **Crypto portfolio tracker for Google Sheets** work of [TechupBusiness](info@techupbusiness.com).
+Any and all changes are hereby aligned to the same license conditions._
 
 
 # CryptoBooks
-This is a fork of the original **Crypto portfolio tracker for Google Sheets** work of **TechupBusiness**.
-Any and all changes are hereby aligned to the same license conditions.
+This is a hobby project for tracking crypto investments built on top of an older sheet I found available under GPL and decided to update.
+Use it at your own risk. You are solely responsible for the accuracy of your finances.
 
-A code of conduct has been provided for the purpose of this fork, please read it before raising any issues of any kind.
+A code of conduct has been provided for the purpose of this fork, please read it before raising ANY issues of ANY kind.
 
 
 # Google Sheet
-[CryptoBooks Google Sheet](https://docs.google.com/spreadsheets/d/1e5owlgcDlpt8PJhtJkwiKRHzZtyYzyPl7gJEgNtAA3o/)
+[CryptoBooks Google Sheet v.2.0](https://docs.google.com/spreadsheets/d/1XtHY5pR4iVSAcTWN5QWn8-WTHEoQ2ALDIKXaPSvhQS8/)
 is a demo Google Sheet that deploys this code.
 
 In order to get started, make a copy of it in your Drive and read the
 [Medium](https://mindup.medium.com/free-crypto-portfolio-tracker-based-on-google-sheets-ef76070ec325)
 article of the original developer.
+
+_Please do keep in mind at this point there are a lot of differences between this version and the article one._
 
 
 # Screenshots
@@ -47,12 +49,17 @@ article of the original developer.
     - Changed the recommended ordering A-Z for mathematical sense
     - Improved defaults.
 
+- Version 2.0
+    - Replaced API with [CoinGecko](https://www.coingecko.com/) free API.
+    - API's only used to pull FIAT and coin values.
+    - Removed exchanges feature due to poor performance.
+    - 98% complete rewrite.
+    - Dynamic sheets formula used for all stats.
+    - Corrected all calculations _(I hope)_.
+
 
 ## Planned updates
-Don't hold your breath though.
+- Automatically add coin when adding trade.
+- Add line graph to each coin.
 
-- Add debug configuration options.
-- Add debug executors.
-- Refactor the code further.
-- Add more APIs.
-- Improve performance.
+_Don't hold your breath though._
