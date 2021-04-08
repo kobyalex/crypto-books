@@ -21,11 +21,11 @@ _Please do keep in mind at this point there are a lot of differences between thi
 
 
 # Screenshots
-![Dashboard](assets/dashboard.jpg "Dashboard")
+![Dashboard](assets/dashboard.v2.jpg "Dashboard")
 
-![Portfolio](assets/portfolio.jpg "Portfolio")
+![Portfolio](assets/portfolio.v2.jpg "Portfolio")
 
-![Trades](assets/trades.jpg "Trades")
+![Trades](assets/trades.v2.jpg "Trades")
 
 
 ## Change list
