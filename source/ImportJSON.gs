@@ -15,7 +15,7 @@ function importJson(url, xpath) {
             var patharray = xpath.split(".");
             Logger.log("ImportJSON:: Path: " + patharray);
 
-            for(var i=0;i<patharray.length;i++){
+            for(var i=0; i< patharray.length; i++){
                 json = json[patharray[i]];
             }
         }
@@ -37,8 +37,8 @@ function importJson(url, xpath) {
         }
     }
     catch(err) {
-        Logger.log("ImportJSON:: " + err);
-        return "Error";
+        Logger.log("ImportJSON::x " + err);
+        return;
     }
 }
 

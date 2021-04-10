@@ -57,6 +57,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - Dynamic sheets formula used for all stats.
     - Corrected all calculations _(I hope)_.
 
+- Version 2.0.1
+    - Added formula for FIAT exchange rates.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.
