@@ -7,7 +7,7 @@
  * @customfunction
  */
 function importJson(url, xpath) {
-    try{
+    try {
         var content = importUrl(url);
 
         var json = JSON.parse(content);
@@ -15,28 +15,25 @@ function importJson(url, xpath) {
             var patharray = xpath.split(".");
             Logger.log("ImportJSON:: Path: " + patharray);
 
-            for(var i=0; i< patharray.length; i++){
+            for (var i = 0; i < patharray.length; i++) {
                 json = json[patharray[i]];
             }
         }
 
-        Logger.log("ImportJSON:: Data type: " + typeof(json));
-        if(typeof(json) === "undefined"){
+        Logger.log("ImportJSON:: Data type: " + typeof (json));
+        if (typeof (json) === "undefined") {
             return "No node";
-        }
-        else if(typeof(json) === "object"){
+        } else if (typeof (json) === "object") {
             var tempArr = [];
 
-            for(var obj in json){
-                tempArr.push([obj,json[obj]]);
+            for (var obj in json) {
+                tempArr.push([obj, json[obj]]);
             }
             return tempArr;
-        }
-        else if(typeof(json) !== "object") {
+        } else if (typeof (json) !== "object") {
             return json;
         }
-    }
-    catch(err) {
+    } catch (err) {
         Logger.log("ImportJSON::x " + err);
         return;
     }

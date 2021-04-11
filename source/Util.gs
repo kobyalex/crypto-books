@@ -4,3 +4,17 @@
 Number.prototype.padLeft = function (n, str) {
     return Array(n - String(this).length + 1).join(str || '0') + this;
 }
+
+/**
+ * Is number.
+ */
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+/**
+ * Is positive.
+ */
+function isPositive(n, e) {
+    return n > 0 ? n : e;
+}

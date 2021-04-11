@@ -60,6 +60,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.0.1
     - Added formula for FIAT exchange rates.
 
+- Version 2.0.2
+    - Added daily flux for given asset.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.

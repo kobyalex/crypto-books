@@ -9,7 +9,7 @@ function addFiatValues() {
     var coins = getCoins();
     for (var i = 1; i < trades.length; i++) {
         var date = new Date(trades[i][0]);
-        var date = date.getDate().padLeft(2) + "-" + (date.getMonth()+1).padLeft(2) + "-" + date.getFullYear();
+        var date = date.getDate().padLeft(2) + "-" + (date.getMonth() + 1).padLeft(2) + "-" + date.getFullYear();
 
         var buy_count = trades[i][2];
         var buy_coin = trades[i][3].toLowerCase();
@@ -40,14 +40,14 @@ function addFiatValues() {
 function setFiat(sheet, coins, date, count, coin, fiat, columnValue, columnTicker, columnFiat, row) {
     if (count > 0 && coin != "" && fiat === "" && coins.hasOwnProperty(coin)) {
         var coinName = coins[coin];
-        if (coinName.toLowerCase() == "fiat") {
-            if (coin == "usd") {
+        if (coinName.toLowerCase() == "fiat" || coin.toLowerCase() == "usdt" || coin.toLowerCase() == "dai") {
+            if (coin == "usd" || coin == "usdt" || coin == "dai") {
                 sheet.getRange(columnFiat + row).setValue("=" + columnValue + row);
             } else {
                 sheet.getRange(columnFiat + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columnTicker + row + ", \"USD\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * " + columnValue + row);
             }
         } else {
-            var rate = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/history?date=" + date, "market_data.current_price.usd")
+            var rate = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/history?date=" + date, "market_data.current_price.usd");
             Logger.log("FiatValues:: Sell: " + [date, coins[coin], rate * count]);
 
             if (rate != undefined) {
@@ -73,7 +73,7 @@ function getCoins() {
 
     for (i = 0; i < rows.length; i++) {
         var ticker = rows[i][0].toLowerCase();
-        var name = rows[i][1].toLowerCase().replace (/\s/g, "-");
+        var name = rows[i][1].toLowerCase().replace(/\s/g, "-");
 
         if (ticker !== "" && name !== "") {
             coins[ticker] = name;

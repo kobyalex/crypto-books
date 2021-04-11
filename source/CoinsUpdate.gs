@@ -7,7 +7,7 @@ function processUpdateCoins() {
     Logger.log("CoinsUpdate:: Coins list: " + ids);
 
     var json = importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=" + ids);
-    if (typeof(json) === "object") {
+    if (typeof (json) === "object") {
         var coins = {};
         for (i = 0; i < json.length; i++) {
             coins[json[i][1]["symbol"].toLowerCase()] = json[i][1];
@@ -21,6 +21,9 @@ function processUpdateCoins() {
             if (rows[i] != undefined && rows[i][0].length > 0) {
                 var ticker = rows[i][0].toLowerCase();
                 if (coins.hasOwnProperty(ticker)) {
+                    if (ticker == "usdt" || ticker == "dai") {
+                        coins[ticker]["current_price"] = 1;
+                    }
                     var payload = [[
                         coins[ticker]["market_cap_rank"], coins[ticker]["total_volume"],
                         coins[ticker]["market_cap"], coins[ticker]["fully_diluted_valuation"],
@@ -56,7 +59,7 @@ function getCoinNames() {
         .filter(String)
         .join(",");
 
-    return coins.toLowerCase().replace (/\s/g, "-");
+    return coins.toLowerCase().replace(/\s/g, "-");
 }
 
 /**
