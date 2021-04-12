@@ -66,6 +66,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.0.3
     - Made trades have equality between buy adn sell fiat value.
 
+- Version 2.0.4
+    - Added Settings for FIAT currency and stable coins.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.

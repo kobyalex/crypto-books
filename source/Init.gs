@@ -26,7 +26,7 @@ function menuUpdateCoins() {
         ui.ButtonSet.OK_CANCEL);
 
     if (result == ui.Button.OK) {
-        var ok = processUpdateCoins();
+        var ok = updateCoins();
         if (ok) {
             ui.alert('Finished updating coins!');
         } else {

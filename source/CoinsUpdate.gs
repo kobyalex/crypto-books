@@ -2,11 +2,13 @@
  * Update coins sheet.
  * <p>Fetch coins data from CoinGecko API.
  */
-function processUpdateCoins() {
+function updateCoins() {
     var ids = getCoinNames();
+    var fiat = getFiat();
+    var stable = getStableCoins();
     Logger.log("CoinsUpdate:: Coins list: " + ids);
 
-    var json = importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=" + ids);
+    var json = importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=" + fiat + "&ids=" + ids);
     if (typeof (json) === "object") {
         var coins = {};
         for (i = 0; i < json.length; i++) {
@@ -21,7 +23,7 @@ function processUpdateCoins() {
             if (rows[i] != undefined && rows[i][0].length > 0) {
                 var ticker = rows[i][0].toLowerCase();
                 if (coins.hasOwnProperty(ticker)) {
-                    if (ticker == "usdt" || ticker == "dai") {
+                    if (stable.indexOf(ticker) != -1) {
                         coins[ticker]["current_price"] = 1;
                     }
                     var payload = [[
@@ -47,25 +49,9 @@ function processUpdateCoins() {
 }
 
 /**
- * Gets coin names.
- * <p>Will lowercase and hyphenate spaces for CoinGeko request.
- */
-function getCoinNames() {
-    var active = SpreadsheetApp.getActive();
-    var sheet = active.getSheetByName("Coins");
-    var coins = sheet
-        .getRange("B3:B")
-        .getValues()
-        .filter(String)
-        .join(",");
-
-    return coins.toLowerCase().replace(/\s/g, "-");
-}
-
-/**
  * Debug method.
  */
-function processUpdateCoinsDebug() {
+function updateCoinsDebug() {
     disableCache();
-    processUpdateCoins();
+    updateCoins();
 }

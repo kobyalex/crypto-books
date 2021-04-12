@@ -3,6 +3,8 @@
  * <p>This is an overview of the holdings of a coin over a period of time.
  */
 function updateFlux() {
+    var fiat = getFiat();
+
     var active = SpreadsheetApp.getActive();
     var sheet = active.getSheetByName("Flux");
     var settings = sheet.getRange("A1:D1").getValues();
@@ -14,7 +16,7 @@ function updateFlux() {
     var coins = getCoins();
     var date = new Date();
     if (coins.hasOwnProperty(coin) && isNumeric(days)) {
-        var chart = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=usd&days=" + days);
+        var chart = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + days);
 
         if (chart != undefined) {
             for (i = 0; i < days; i++) {
