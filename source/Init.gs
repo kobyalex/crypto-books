@@ -47,7 +47,7 @@ function menuAddFiatValues() {
 
     if (result == ui.Button.OK) {
         addFiatValues();
-        ui.alert('Finished populating fiat rates! CoinGecko may be throttling the connection, please try later.');
+        ui.alert('Finished populating fiat rates! Some may be missing as CoinGecko may be throttling the connection, please try later.');
     }
 }
 

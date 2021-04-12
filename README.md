@@ -63,6 +63,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.0.2
     - Added daily flux for given asset.
 
+- Version 2.0.3
+    - Made trades have equality between buy adn sell fiat value.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.

@@ -32,16 +32,16 @@ function enableCache() {
  */
 function setCache(key, value, duration) {
     if (isCache()) {
-      duration = parseInt(duration);
-      if (duration == 0 || isNaN(duration)) {
-          duration = 600;
-      }
-      var cacheService = CacheService.getUserCache();
+        duration = parseInt(duration);
+        if (duration == 0 || isNaN(duration)) {
+            duration = 600;
+        }
+        var cacheService = CacheService.getUserCache();
 
-      key = key.length > 250 ? key.substring(0, 250) : key;
-      cacheService.put(key, JSON.stringify(value), duration);
+        key = key.length > 250 ? key.substring(0, 250) : key;
+        cacheService.put(key, JSON.stringify(value), duration);
 
-      return true;
+        return true;
     }
 
     return false;
@@ -54,16 +54,16 @@ function setCache(key, value, duration) {
  */
 function getCache(key) {
     if (isCache()) {
-      var cacheService = CacheService.getUserCache();
+        var cacheService = CacheService.getUserCache();
 
-      key = key.length > 250 ? key.substring(0, 250) : key;
-      var items = cacheService.get(key);
+        key = key.length > 250 ? key.substring(0, 250) : key;
+        var items = cacheService.get(key);
 
-      if (!items) {
-          return null;
-      }
+        if (!items) {
+            return null;
+        }
 
-      return JSON.parse(items);
+        return JSON.parse(items);
     }
 }
 
