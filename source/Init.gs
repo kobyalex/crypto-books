@@ -30,7 +30,7 @@ function menuUpdateCoins() {
         if (ok) {
             ui.alert('Finished updating coins!');
         } else {
-            ui.alert('Error updating coins! CoinGecko may be throttling the connection, please try later.');
+            ui.alert('Error updating coins!');
         }
     }
 }
@@ -47,7 +47,7 @@ function menuAddFiatValues() {
 
     if (result == ui.Button.OK) {
         addFiatValues();
-        ui.alert('Finished populating fiat rates! Some may be missing as CoinGecko may be throttling the connection, please try later.');
+        ui.alert('Finished populatinf FIAT rates!');
     }
 }
 
@@ -66,7 +66,7 @@ function menuUpdateFlux() {
         if (ok) {
             ui.alert('Finished building flux!');
         } else {
-            ui.alert('Error building flux! CoinGecko may be throttling the connection, please try later.');
+            ui.alert('Error building flux!');
         }
     }
 }

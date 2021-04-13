@@ -11,12 +11,12 @@ function updateFlux() {
 
     var days = settings[0][1];
     var coin = settings[0][3].toLowerCase();
-    Logger.log("BuildFlux:: Config: " + [days, coin]);
+    Logger.log("updateFlux:: " + [days, coin]);
 
     var coins = getCoins();
     var date = new Date();
     if (coins.hasOwnProperty(coin) && isNumeric(days)) {
-        var chart = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + days);
+        var chart = apiFlux(fiat, coin, days);
 
         if (chart != undefined) {
             for (i = 0; i < days; i++) {

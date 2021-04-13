@@ -6,15 +6,10 @@ function updateCoins() {
     var ids = getCoinNames();
     var fiat = getFiat();
     var stable = getStableCoins();
-    Logger.log("CoinsUpdate:: Coins list: " + ids);
+    Logger.log("updateCoins:: Coins list: " + ids);
 
-    var json = importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=" + fiat + "&ids=" + ids);
-    if (typeof (json) === "object") {
-        var coins = {};
-        for (i = 0; i < json.length; i++) {
-            coins[json[i][1]["symbol"].toLowerCase()] = json[i][1];
-        }
-
+    var coins = apiMarkets(fiat, ids);
+    if (Object.keys(coins).length > 0) {
         var active = SpreadsheetApp.getActive();
         var sheet = active.getSheetByName("Coins");
         var rows = sheet.getRange("A3:A").getValues();
@@ -33,7 +28,7 @@ function updateCoins() {
                         coins[ticker]["low_24h"], coins[ticker]["high_24h"], coins[ticker]["ath"],
                         coins[ticker]["price_change_24h"], coins[ticker]["current_price"]
                     ]];
-                    Logger.log("CoinsUpdate:: Row data: " + JSON.stringify([i, ticker, payload[0]]));
+                    Logger.log("updateCoins:: Row data: " + JSON.stringify([i, ticker, payload[0]]));
 
                     var r = i + 3;
                     var range = sheet.getRange("C" + r + ":M" + r);

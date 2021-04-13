@@ -9,7 +9,7 @@ var cacheDisabled;
  */
 function disableCache() {
     cacheDisabled = true;
-    Logger.log("Cache:: Disabled");
+    Logger.log("disableCache");
 }
 
 /**
@@ -17,7 +17,7 @@ function disableCache() {
  */
 function enableCache() {
     cacheDisabled = undefined;
-    Logger.log("Cache:: Enabled");
+    Logger.log("enableCache");
 }
 
 /**
@@ -84,7 +84,7 @@ function deleteCache(key) {
  */
 function isCache() {
     if (cacheDisabled == true) {
-        Logger.log("Cache:: Is disabled");
+        Logger.log("isCache:: Is disabled");
         return false;
     }
 

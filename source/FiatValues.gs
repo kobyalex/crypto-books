@@ -11,7 +11,6 @@ function addFiatValues() {
     var stable = getStableCoins();
     for (var i = 1; i < trades.length; i++) {
         var date = new Date(trades[i][0]);
-        var date = date.getDate().padLeft(2) + "-" + (date.getMonth() + 1).padLeft(2) + "-" + date.getFullYear();
 
         var buy_count = trades[i][2];
         var buy_coin = trades[i][3].toLowerCase();
@@ -76,16 +75,16 @@ function setEqualFiat(sheet, coins, fiat, stable, date, buy_count, buy_coin, sel
         }
     } else {
         if (coinName == buyCoinName) {
-            var rate = importJson("https://api.coingecko.com/api/v3/coins/" + coins[buy_coin] + "/history?date=" + date, "market_data.current_price." + fiat);
-            Logger.log("FiatValueBuy:: Sell: " + [date, coins[buy_coin], rate * buy_count]);
+            var rate = apiRate(fiat, buy_coin, date);
+            Logger.log("setEqualFiat:: " + [date, buy_coin, rate * buy_count]);
 
             if (rate != undefined) {
                 sheet.getRange("E" + row).setValue(rate * buy_count);
                 sheet.getRange("H" + row).setValue("=E" + row);
             }
         } else {
-            var rate = importJson("https://api.coingecko.com/api/v3/coins/" + coins[sell_coin] + "/history?date=" + date, "market_data.current_price." + fiat);
-            Logger.log("FiatValueSell:: Sell: " + [date, coins[sell_coin], rate * sell_count]);
+            var rate = apiRate(fiat, sell_coin, date);
+            Logger.log("setEqualFiat:: " + [date, sell_coin, rate * sell_count]);
 
             if (rate != undefined) {
                 sheet.getRange("E" + row).setValue("=H" + row);
@@ -107,8 +106,8 @@ function setFiat(sheet, coins, fiat, stable, date, count, coin, columnValue, col
             sheet.getRange(columnFiat + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columnTicker + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * " + columnValue + row);
         }
     } else {
-        var rate = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/history?date=" + date, "market_data.current_price." + fiat);
-        Logger.log("FiatValues:: Sell: " + [date, coins[coin], rate * count]);
+        var rate = apiRate(fiat, coin, date);
+        Logger.log("setFiat:: " + [date, coin, rate * count]);
 
         if (rate != undefined) {
             sheet.getRange(columnFiat + row).setValue(rate * count);

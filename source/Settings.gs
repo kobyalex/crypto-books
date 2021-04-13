@@ -42,7 +42,7 @@ function getCoins() {
 
 /**
  * Gets FIAT.
- * <p>Refference FIAT currency.
+ * <p>Reference FIAT currency.
  */
 function getFiat() {
     var active = SpreadsheetApp.getActive();
@@ -68,4 +68,13 @@ function getStableCoins() {
     }
 
     return coins.join('|').toLowerCase().split('|');
+}
+
+/**
+ * Gets CryptoCompare API key.
+ */
+function getCryptoCompareKey() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Settings");
+    return sheet.getRange("C8").getValue().toLowerCase();
 }

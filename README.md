@@ -72,6 +72,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.0.5
     - Fixed fiat values.
 
+- Version 2.1
+    - Added CryptoCompare API for FIAT rates.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.
