@@ -6,7 +6,9 @@ function addFiatValues() {
     var sheet = active.getSheetByName("Trades");
     var trades = sheet.getDataRange().getValues();
 
+    var fiat = getFiat();
     var coins = getCoins();
+    var stable = getStableCoins();
     for (var i = 1; i < trades.length; i++) {
         var date = new Date(trades[i][0]);
         var date = date.getDate().padLeft(2) + "-" + (date.getMonth() + 1).padLeft(2) + "-" + date.getFullYear();
@@ -58,11 +60,11 @@ function setEqualFiat(sheet, coins, fiat, stable, date, buy_count, buy_coin, sel
 
     if (coinName == "fiat" && stable.indexOf(coin) == -1) {
         if (coinName == buyCoinName) {
-            sheet.getRange("E" + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(D" + row + ", " + fiat.toUpperCase() + ")), \"price\", TO_DATE(A" + row + ")), 2, 2) * C" + row);
+            sheet.getRange("E" + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(D" + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * C" + row);
             sheet.getRange("H" + row).setValue("=E" + row);
         } else {
             sheet.getRange("E" + row).setValue("=H" + row);
-            sheet.getRange("H" + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(G" + row + ", " + fiat.toUpperCase() + ")), \"price\", TO_DATE(A" + row + ")), 2, 2) * F" + row);
+            sheet.getRange("H" + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(G" + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * F" + row);
         }
     } else if (stable.indexOf(coin) != -1) {
         if (coinName == buyCoinName) {
@@ -102,7 +104,7 @@ function setFiat(sheet, coins, fiat, stable, date, count, coin, columnValue, col
         if (coin == fiat || stable.indexOf(coin) != -1) {
             sheet.getRange(columnFiat + row).setValue("=" + columnValue + row);
         } else {
-            sheet.getRange(columnFiat + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columnTicker + row + ", " + fiat.toUpperCase() + ")), \"price\", TO_DATE(A" + row + ")), 2, 2) * " + columnValue + row);
+            sheet.getRange(columnFiat + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columnTicker + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * " + columnValue + row);
         }
     } else {
         var rate = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/history?date=" + date, "market_data.current_price." + fiat);

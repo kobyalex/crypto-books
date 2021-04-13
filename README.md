@@ -69,6 +69,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.0.4
     - Added Settings for FIAT currency and stable coins.
 
+- Version 2.0.5
+    - Fixed fiat values.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.

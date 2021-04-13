@@ -62,5 +62,10 @@ function getStableCoins() {
         .getValues()
         .filter(String);
 
+    var fiat = getFiat();
+    if (coins.indexOf(fiat) === -1) {
+        coins.push(fiat);
+    }
+
     return coins.join('|').toLowerCase().split('|');
 }
