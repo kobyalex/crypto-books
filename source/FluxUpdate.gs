@@ -21,10 +21,10 @@ function updateFlux() {
         if (chart != undefined) {
             for (i = 0; i < days; i++) {
                 var r = i + 3;
-                date.setDate(date.getDate() - 1);
 
                 sheet.getRange("B" + r).setValue((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear());
-                sheet.getRange("C" + r).setValue(chart[0][1][i][1]);
+                sheet.getRange("C" + r).setValue(chart[0][1][days-i][1]);
+                date.setDate(date.getDate() - 1);
             }
 
             return true;

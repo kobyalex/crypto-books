@@ -29,5 +29,5 @@ function geckoRate(fiat, coin, date) {
  */
 function geckoFlux(fiat, coin, days) {
     var coins = getCoins();
-    return importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + days);
+    return importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + days + "&interval=daily");
 }

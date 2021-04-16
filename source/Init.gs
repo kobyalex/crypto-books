@@ -64,9 +64,9 @@ function menuUpdateFlux() {
     if (result == ui.Button.OK) {
         var ok = updateFlux();
         if (ok) {
-            ui.alert('Finished building flux!');
+            ui.alert('Finished updating flux!');
         } else {
-            ui.alert('Error building flux!');
+            ui.alert('Error updating flux!');
         }
     }
 }

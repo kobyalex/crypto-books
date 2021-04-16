@@ -75,6 +75,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.1
     - Added CryptoCompare API for FIAT rates.
 
+- Version 2.1.1
+    - Fixed flux.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.
