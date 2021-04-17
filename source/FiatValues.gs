@@ -52,7 +52,7 @@ function setEqualFiat(sheet, coins, fiat, stable, date, buy_count, buy_coin, sel
 
     var coin = sell_coin;
     var coinName = sellCoinName;
-    if ((buyCoinName == "fiat" && sellCoinName != "fiat") || stable.indexOf(buyCoinName) != -1) {
+    if ((buyCoinName == "fiat" && sellCoinName != "fiat") || stable.indexOf(buy_coin) != -1) {
         coin = buy_coin;
         coinName = buyCoinName;
     }
