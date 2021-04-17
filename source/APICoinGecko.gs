@@ -20,14 +20,15 @@ function geckoMarkets(fiat, ids) {
  */
 function geckoRate(fiat, coin, date) {
     var coins = getCoins();
-    var date = date.getDate().padLeft(2) + "-" + (date.getMonth() + 1).padLeft(2) + "-" + date.getFullYear();
+    date = date.getDate().padLeft(2) + "-" + (date.getMonth() + 1).padLeft(2) + "-" + date.getFullYear();
     return importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/history?date=" + date, "market_data.current_price." + fiat);
 }
 
 /**
  * Gets coin flux from CoinGecko API for given number of days.
  */
-function geckoFlux(fiat, coin, days) {
+function geckoFlux(fiat, coin, days, interval) {
     var coins = getCoins();
-    return importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + days + "&interval=daily");
+    days = interval == "hourly" ? Math.ceil(days / 24) : days;
+    return importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + days + "&interval=" + interval);
 }

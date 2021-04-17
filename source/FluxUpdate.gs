@@ -4,27 +4,33 @@
  */
 function updateFlux() {
     var fiat = getFiat();
+    var coins = getCoins();
 
     var active = SpreadsheetApp.getActive();
     var sheet = active.getSheetByName("Flux");
-    var settings = sheet.getRange("A1:D1").getValues();
+    var settings = sheet.getRange("A1:F1").getValues();
 
     var days = settings[0][1];
     var coin = settings[0][3].toLowerCase();
+    var interval = settings[0][5];
     Logger.log("updateFlux:: " + [days, coin]);
 
-    var coins = getCoins();
-    var date = new Date();
+    var date;
     if (coins.hasOwnProperty(coin) && isNumeric(days)) {
-        var chart = apiFlux(fiat, coin, days);
+        var chart = apiFlux(fiat, coin, days, interval);
 
         if (chart != undefined) {
-            for (i = 0; i < days; i++) {
-                var r = i + 3;
+            var r = 2;
+            for (var i = chart[0][1].length -1; i >= 0; i--) {
+                r++;
 
-                sheet.getRange("B" + r).setValue((date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear());
-                sheet.getRange("C" + r).setValue(chart[0][1][days-i][1]);
-                date.setDate(date.getDate() - 1);
+                date = new Date(chart[0][1][i][0]);
+                date = (date.getMonth() + 1).padLeft(2) + "/" + date.getDate().padLeft(2) + "/" + date.getFullYear() +
+                    " " + date.getHours().padLeft(2) + ":" + date.getMinutes().padLeft(2) + ":" + date.getSeconds().padLeft(2);
+                sheet.getRange("B" + r).setValue(date);
+                sheet.getRange("C" + r).setValue(chart[0][1][i][1]);
+
+                if ((r - 2) == days) return true;
             }
 
             return true;

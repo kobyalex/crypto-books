@@ -21,6 +21,6 @@ function apiRate(fiat, coin, date) {
 /**
  * Gets coin flux.
  */
-function apiFlux(fiat, coin, days) {
-    return geckoFlux(fiat, coin, days);
+function apiFlux(fiat, coin, days, interval) {
+    return geckoFlux(fiat, coin, days, interval);
 }

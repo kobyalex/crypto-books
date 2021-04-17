@@ -57,32 +57,20 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - Dynamic sheets formula used for all stats.
     - Corrected all calculations _(I hope)_.
 
-- Version 2.0.1
+- Version 2.0.1-5
     - Added formula for FIAT exchange rates.
-
-- Version 2.0.2
     - Added daily flux for given asset.
-
-- Version 2.0.3
     - Made trades have equality between buy adn sell fiat value.
-
-- Version 2.0.4
     - Added Settings for FIAT currency and stable coins.
-
-- Version 2.0.5
     - Fixed fiat values.
 
 - Version 2.1
     - Added CryptoCompare API for FIAT rates.
 
-- Version 2.1.1
-    - Fixed flux.
-
-- Version 2.1.2
-    - Fixed stable coins fiat values.
-
-- Version 2.1.3
-    - Fixed stable coins fiat values.
+- Version 2.1.1-5
+    - Fixed flux and stable coins fiat values.
+    - Added flux interval choice between daily and hourly.
+    - Added flux volume.
 
 
 ## Planned updates
