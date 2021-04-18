@@ -72,8 +72,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - Added flux interval choice between daily and hourly.
     - Added flux volume.
 
-- Version 2.1.6
+- Version 2.1.6-7
     - Made Flux multi-sheet by using active sheet.
+    - Improved Flux update error messages.
 
 
 ## Planned updates

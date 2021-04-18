@@ -41,6 +41,9 @@ function updateFlux(ui) {
 
             return;
         }
+
+        ui.alert('Failed to fetch data!');
+        return;
     }
 
     ui.alert('Invalid configuration!');
