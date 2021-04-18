@@ -7,9 +7,9 @@ function onOpen() {
     var ui = SpreadsheetApp.getUi();
 
     ui.createMenu('Crypto')
-        .addItem('Update coins', 'menuUpdateCoins')
-        .addItem('Add fiat values', 'menuAddFiatValues')
-        .addItem('Update flux', 'menuUpdateFlux')
+        .addItem('Update Coins', 'menuUpdateCoins')
+        .addItem('Add FIAT values', 'menuAddFiatValues')
+        .addItem('Update current Flux', 'menuUpdateFlux')
         .addToUi();
 
     enableCache();
@@ -27,9 +27,7 @@ function menuUpdateCoins() {
 
     if (result == ui.Button.OK) {
         var ok = updateCoins();
-        if (ok) {
-            ui.alert('Finished updating coins!');
-        } else {
+        if (!ok) {
             ui.alert('Error updating coins!');
         }
     }
@@ -47,26 +45,20 @@ function menuAddFiatValues() {
 
     if (result == ui.Button.OK) {
         addFiatValues();
-        ui.alert('Finished populatinf FIAT rates!');
     }
 }
 
 /**
- * Update Flux sheet.
+ * Update Flux.
  */
 function menuUpdateFlux() {
     var ui = SpreadsheetApp.getUi();
 
     var result = ui.alert(
-        'Do you want to building Flux sheet?',
+        'Do you want to update current Flux sheet?',
         ui.ButtonSet.OK_CANCEL);
 
     if (result == ui.Button.OK) {
-        var ok = updateFlux();
-        if (ok) {
-            ui.alert('Finished updating flux!');
-        } else {
-            ui.alert('Error updating flux!');
-        }
+        updateFlux(ui);
     }
 }
