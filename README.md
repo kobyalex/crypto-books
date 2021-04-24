@@ -76,8 +76,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - Made Flux multi-sheet by using active sheet.
     - Improved Flux update error messages.
 
-- Version 2.1.8
+- Version 2.1.8-9
     - Use secondary API (key contingent) if first fails for Coins update.
+    - Made room for new ATH percentage bar indicator in Coins column L.
 
 
 ## Planned updates

@@ -54,10 +54,10 @@ function updateCoins() {
                         sheet.getRange("K" + r).setValue(market[ticker]["ath"]);
                     }
                     if(market[ticker].hasOwnProperty("price_change_24h")) {
-                        sheet.getRange("L" + r).setValue(market[ticker]["price_change_24h"]);
+                        sheet.getRange("M" + r).setValue(market[ticker]["price_change_24h"]);
                     }
                     if(market[ticker].hasOwnProperty("current_price")) {
-                        sheet.getRange("M" + r).setValue(market[ticker]["current_price"]);
+                        sheet.getRange("N" + r).setValue(market[ticker]["current_price"]);
                     }
 
                     Logger.log("updateCoins:: Row data: " + JSON.stringify([i, r, ticker, market[ticker]]));
