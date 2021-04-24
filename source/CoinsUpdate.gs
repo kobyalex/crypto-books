@@ -3,36 +3,64 @@
  * <p>Fetch coins data from CoinGecko API.
  */
 function updateCoins() {
-    var ids = getCoinNames();
-    var fiat = getFiat();
-    var stable = getStableCoins();
-    Logger.log("updateCoins:: Coins list: " + ids);
+    var market = apiMarkets(getFiat(), getCoinNames(), getTickers());
+    if(Object.keys(market).length > 0) {
+        var coins = getCoins();
+        var stable = getStableCoins();
 
-    var coins = apiMarkets(fiat, ids);
-    if (Object.keys(coins).length > 0) {
         var active = SpreadsheetApp.getActive();
         var sheet = active.getSheetByName("Coins");
         var rows = sheet.getRange("A3:A").getValues();
 
-        for (i = 0; i < rows.length; i++) {
-            if (rows[i] != undefined && rows[i][0].length > 0) {
+        for(i = 0; i < rows.length; i++) {
+            if(rows[i] != undefined && rows[i][0].length > 0) {
                 var ticker = rows[i][0].toLowerCase();
-                if (coins.hasOwnProperty(ticker)) {
-                    if (stable.indexOf(ticker) != -1) {
-                        coins[ticker]["current_price"] = 1;
+                if(market.hasOwnProperty(ticker)) {
+                    // Skip fiat
+                    if(coins[ticker] == "fiat") {
+                        continue;
                     }
-                    var payload = [[
-                        coins[ticker]["market_cap_rank"], coins[ticker]["total_volume"],
-                        coins[ticker]["market_cap"], coins[ticker]["fully_diluted_valuation"],
-                        coins[ticker]["circulating_supply"], coins[ticker]["total_supply"],
-                        coins[ticker]["low_24h"], coins[ticker]["high_24h"], coins[ticker]["ath"],
-                        coins[ticker]["price_change_24h"], coins[ticker]["current_price"]
-                    ]];
-                    Logger.log("updateCoins:: Row data: " + JSON.stringify([i, ticker, payload[0]]));
+                    // Set stablecoins to 1
+                    if(stable.indexOf(ticker) != -1) {
+                        market[ticker]["current_price"] = 1;
+                    }
 
                     var r = i + 3;
-                    var range = sheet.getRange("C" + r + ":M" + r);
-                    range.setValues(payload);
+                    if(market[ticker].hasOwnProperty("market_cap_rank")) {
+                        sheet.getRange("C" + r).setValue(market[ticker]["market_cap_rank"]);
+                    }
+                    if(market[ticker].hasOwnProperty("total_volume")) {
+                        sheet.getRange("D" + r).setValue(market[ticker]["total_volume"]);
+                    }
+                    if(market[ticker].hasOwnProperty("market_cap")) {
+                        sheet.getRange("E" + r).setValue(market[ticker]["market_cap"]);
+                    }
+                    if(market[ticker].hasOwnProperty("fully_diluted_valuation")) {
+                        sheet.getRange("F" + r).setValue(market[ticker]["fully_diluted_valuation"]);
+                    }
+                    if(market[ticker].hasOwnProperty("circulating_supply")) {
+                        sheet.getRange("G" + r).setValue(market[ticker]["circulating_supply"]);
+                    }
+                    if(market[ticker].hasOwnProperty("total_supply")) {
+                        sheet.getRange("H" + r).setValue(market[ticker]["total_supply"]);
+                    }
+                    if(market[ticker].hasOwnProperty("low_24h")) {
+                        sheet.getRange("I" + r).setValue(market[ticker]["low_24h"]);
+                    }
+                    if(market[ticker].hasOwnProperty("high_24h")) {
+                        sheet.getRange("J" + r).setValue(market[ticker]["high_24h"]);
+                    }
+                    if(market[ticker].hasOwnProperty("ath")) {
+                        sheet.getRange("K" + r).setValue(market[ticker]["ath"]);
+                    }
+                    if(market[ticker].hasOwnProperty("price_change_24h")) {
+                        sheet.getRange("L" + r).setValue(market[ticker]["price_change_24h"]);
+                    }
+                    if(market[ticker].hasOwnProperty("current_price")) {
+                        sheet.getRange("M" + r).setValue(market[ticker]["current_price"]);
+                    }
+
+                    Logger.log("updateCoins:: Row data: " + JSON.stringify([i, r, ticker, market[ticker]]));
                 }
             }
         }

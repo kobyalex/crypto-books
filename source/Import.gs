@@ -15,27 +15,27 @@ function importJson(url, xpath) {
             var patharray = xpath.split(".");
             Logger.log("importJson:: Path: " + patharray);
 
-            for (var i = 0; i < patharray.length; i++) {
+            for(var i = 0; i < patharray.length; i++) {
                 json = json[patharray[i]];
             }
         }
 
-        Logger.log("importJson:: Data type: " + typeof (json));
+        Logger.log("importJson:: Data type: " + typeof(json));
         if(typeof(json) === "undefined") {
             return "No node";
 
-        } else if (typeof (json) === "object") {
+        } else if(typeof(json) === "object") {
             var tempArr = [];
 
-            for (var obj in json) {
+            for(var obj in json) {
                 tempArr.push([obj, json[obj]]);
             }
             return tempArr;
 
-        } else if (typeof (json) !== "object") {
+        } else if(typeof(json) !== "object") {
             return json;
         }
-    } catch (err) {
+    } catch(err) {
         Logger.log("importJson:: " + err);
         return;
     }
@@ -49,7 +49,7 @@ function importJson(url, xpath) {
  */
 function importUrl(url) {
     var cached = getCache(url);
-    if (cached != null) {
+    if(cached != null) {
         Logger.log("importUrl:: Cache found for: " + url);
         return cached;
     }
@@ -68,6 +68,6 @@ function importUrl(url) {
  * Debug method.
  */
 function importJsonDebug() {
-    enableCache();
+    disableCache();
     Logger.log(importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin", "0.total_volume"));
 }

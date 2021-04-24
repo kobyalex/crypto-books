@@ -15,6 +15,21 @@ function getCoinNames() {
 }
 
 /**
+ * Gets tickers.
+ */
+function getTickers() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Coins");
+    var coins = sheet
+        .getRange("A3:A")
+        .getValues()
+        .filter(String)
+        .join(",");
+
+    return coins.toLowerCase();
+}
+
+/**
  * Gets coin tickers and names.
  * <p>Will lowercase and hyphenate spaces for CoinGeko request.
  */
@@ -28,11 +43,11 @@ function getCoins() {
 
     var coins = {};
 
-    for (i = 0; i < rows.length; i++) {
+    for(i = 0; i < rows.length; i++) {
         var ticker = rows[i][0].toLowerCase();
         var name = rows[i][1].toLowerCase().replace(/\s/g, "-");
 
-        if (ticker !== "" && name !== "") {
+        if(ticker !== "" && name !== "") {
             coins[ticker] = name;
         }
     }
@@ -63,7 +78,7 @@ function getStableCoins() {
         .filter(String);
 
     var fiat = getFiat();
-    if (coins.indexOf(fiat) === -1) {
+    if(coins.indexOf(fiat) === -1) {
         coins.push(fiat);
     }
 

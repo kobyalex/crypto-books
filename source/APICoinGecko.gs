@@ -5,9 +5,11 @@
 function geckoMarkets(fiat, ids) {
     var market = {};
 
+    enableCache();
     var json = importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=" + fiat + "&ids=" + ids);
-    if (typeof (json) === "object") {
-        for (i = 0; i < json.length; i++) {
+
+    if(typeof(json) === "object") {
+        for(i = 0; i < json.length; i++) {
             market[json[i][1]["symbol"].toLowerCase()] = json[i][1];
         }
     }
@@ -21,6 +23,8 @@ function geckoMarkets(fiat, ids) {
 function geckoRate(fiat, coin, date) {
     var coins = getCoins();
     date = date.getDate().padLeft(2) + "-" + (date.getMonth() + 1).padLeft(2) + "-" + date.getFullYear();
+
+    enableCache();
     return importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/history?date=" + date, "market_data.current_price." + fiat);
 }
 
@@ -30,5 +34,7 @@ function geckoRate(fiat, coin, date) {
 function geckoFlux(fiat, coin, days, interval) {
     var coins = getCoins();
     days = interval == "hourly" ? Math.ceil(days / 24) : days;
+
+    enableCache();
     return importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + days + "&interval=" + interval);
 }

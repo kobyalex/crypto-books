@@ -31,9 +31,9 @@ function enableCache() {
  * @param duration Retention duration.
  */
 function setCache(key, value, duration) {
-    if (isCache()) {
+    if(isCache()) {
         duration = parseInt(duration);
-        if (duration == 0 || isNaN(duration)) {
+        if(duration == 0 || isNaN(duration)) {
             duration = 600;
         }
         var cacheService = CacheService.getUserCache();
@@ -53,13 +53,13 @@ function setCache(key, value, duration) {
  * @param key Cache key.
  */
 function getCache(key) {
-    if (isCache()) {
+    if(isCache()) {
         var cacheService = CacheService.getUserCache();
 
         key = key.length > 250 ? key.substring(0, 250) : key;
         var items = cacheService.get(key);
 
-        if (!items) {
+        if(!items) {
             return null;
         }
 
@@ -71,7 +71,7 @@ function getCache(key) {
  * Delete cache entry.
  */
 function deleteCache(key) {
-    if (isCache()) {
+    if(isCache()) {
         var cacheService = CacheService.getUserCache();
 
         key = key.length > 250 ? key.substring(0, 250) : key;
@@ -83,7 +83,7 @@ function deleteCache(key) {
  * Is cache enabled.
  */
 function isCache() {
-    if (cacheDisabled == true) {
+    if(cacheDisabled == true) {
         Logger.log("isCache:: Is disabled");
         return false;
     }

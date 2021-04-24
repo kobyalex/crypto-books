@@ -8,7 +8,7 @@ function updateFlux(ui) {
 
     var sheet = SpreadsheetApp.getActive();
     var name = sheet.getSheetName();
-    if (name.indexOf("Flux") == -1) {
+    if(name.indexOf("Flux") == -1) {
         ui.alert('Incorrect active sheet!');
         return;
     }
@@ -20,12 +20,12 @@ function updateFlux(ui) {
     Logger.log("updateFlux:: Request: " + [days, coin, interval]);
 
     var date;
-    if (coins.hasOwnProperty(coin) && isNumeric(days) && (interval == "hourly" || interval == "daily")) {
+    if(coins.hasOwnProperty(coin) && isNumeric(days) && (interval == "hourly" || interval == "daily")) {
         var chart = apiFlux(fiat, coin, days, interval);
 
-        if (chart != undefined) {
+        if(chart != undefined) {
             var r = 2;
-            for (var i = chart[0][1].length -1; i >= 0; i--) {
+            for(var i = chart[0][1].length -1; i >= 0; i--) {
                 r++;
 
                 date = new Date(chart[0][1][i][0]);
@@ -36,7 +36,7 @@ function updateFlux(ui) {
                 sheet.getRange("D" + r).setValue(chart[2][1][i][1]);
                 Logger.log("updateFlux:: Row: " + [date, chart[0][1][i][1], chart[2][1][i][1]]);
 
-                if ((r - 2) == days) return true;
+                if((r - 2) == days) return true;
             }
 
             return;

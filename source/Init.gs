@@ -25,9 +25,9 @@ function menuUpdateCoins() {
         'Do you want to update Coins sheet?',
         ui.ButtonSet.OK_CANCEL);
 
-    if (result == ui.Button.OK) {
+    if(result == ui.Button.OK) {
         var ok = updateCoins();
-        if (!ok) {
+        if(!ok) {
             ui.alert('Error updating coins!');
         }
     }
@@ -43,7 +43,7 @@ function menuAddFiatValues() {
         'Do you want to populate FIAT values in Trades sheet?',
         ui.ButtonSet.OK_CANCEL);
 
-    if (result == ui.Button.OK) {
+    if(result == ui.Button.OK) {
         addFiatValues();
     }
 }
@@ -58,7 +58,7 @@ function menuUpdateFlux() {
         'Do you want to update current Flux sheet?',
         ui.ButtonSet.OK_CANCEL);
 
-    if (result == ui.Button.OK) {
+    if(result == ui.Button.OK) {
         updateFlux(ui);
     }
 }
