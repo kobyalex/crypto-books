@@ -1,14 +1,14 @@
 /**
- * Gets coins market data.
+ * Gets coins data.
  * <p>This is an implementation wrapper for API change capability.
  */
-function apiMarkets(fiat, ids, tickers) {
-    var market = geckoMarkets(fiat, ids);
+function apiCoins(fiat, ids, tickers) {
+    var market = geckoCoins(fiat, ids);
 
-    if(Object.keys(market).length == 0) {
+    if(market == undefined || Object.keys(market).length == 0) {
         var key = getCryptoCompareKey();
         if(key != "") {
-            market = cryptoMarkets(key, fiat, tickers);
+            market = cryptoCoins(key, fiat, tickers);
         }
     }
 
@@ -31,13 +31,14 @@ function apiRate(fiat, coin, date) {
  * Gets coin flux.
  */
 function apiFlux(fiat, coin, days, interval) {
-    return geckoFlux(fiat, coin, days, interval);
-}
+    var flux = geckoFlux(fiat, coin, days, interval);
 
-/**
- * Debug.
- */
-function apiMarketsDebug() {
-    disableCache();
-    return apiMarkets("usd", "bitcoin,ethereum,litecoin", "btc,eth,ltc");
+    if(flux == undefined || Object.keys(flux).length == 0) {
+        var key = getCryptoCompareKey();
+        if(key != "") {
+            flux = cryptoFlux(key, fiat, coin, days, interval);
+        }
+    }
+
+    return flux;
 }

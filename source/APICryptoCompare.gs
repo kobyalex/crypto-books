@@ -1,18 +1,18 @@
 /**
- * Gets coins market data from CoinGecko API versus given fiat.
+ * Gets coins market data from CryptoCompare API versus given fiat.
  * <p>Documentation: https://www.coingecko.com/api/documentations/v3
  */
-function cryptoMarkets(key, fiat, tickers) {
+function cryptoCoins(key, fiat, tickers) {
     var market = {};
 
     disableCache();
-    var json = importJson("https://min-api.cryptocompare.com/data/pricemultifull?api_key=" + key + "&tsyms=" + fiat + "&fsyms=" + tickers + "&relaxedValidation=true");
+    var json = importJson("https://min-api.cryptocompare.com/data/pricemultifull?api_key=" + key + "&tsyms=" + fiat + "&fsyms=" + tickers + "&relaxedValidation=true&extraParams=cryptoBooks2");
 
     if(typeof(json) === "object" && json.length > 1 && json[0].length > 1) {
-        var key, data, ticker;
-        for(key in json[0][1]) {
-            data = json[0][1][key][fiat.toUpperCase()];
-            ticker = key.toLowerCase();
+        var data, ticker;
+        for(var i in json[0][1]) {
+            data = json[0][1][i][fiat.toUpperCase()];
+            ticker = i.toLowerCase();
 
             market[ticker] = [];
             if(data.hasOwnProperty("MKTCAP")) {
@@ -44,25 +44,48 @@ function cryptoMarkets(key, fiat, tickers) {
  */
 function cryptoRate(key, fiat, coin, date) {
     enableCache();
-    var rate = importJson("https://min-api.cryptocompare.com/data/v2/histohour?api_key=" + key + "&fsym=" + coin + "&tsym=" + fiat + "&toTs=" + (date.getTime() / 1000) + "&limit=1","Data.Data.0.close");
-    if(typeof(rate) === "number") {
-        return rate;
+    var json = importJson("https://min-api.cryptocompare.com/data/v2/histohour?api_key=" + key + "&fsym=" + coin + "&tsym=" + fiat + "&toTs=" + (date.getTime() / 1000) + "&limit=1&extraParams=cryptoBooks2","Data.Data.0.close");
+
+    if(typeof(json) === "number") {
+        return json;
     }
 
     return;
 }
 
 /**
+ * Gets coin flux from CryptoCompare API for given limit and interval.
+ */
+function cryptoFlux(key, fiat, coin, limit, interval) {
+    interval = interval == "hourly" ? "histohour" : "histoday";
+    var flux = [];
+
+    disableCache();
+    var json = importJson("https://min-api.cryptocompare.com/data/v2/" + interval + "?api_key=" + key + "&fsym=" + coin + "&tsym=" + fiat + "&limit=" + limit + "&extraParams=cryptoBooks2");
+
+    if(typeof(json) === "object" && json.length > 5 && json[5].length > 1 && json[5][1].hasOwnProperty("Data")) {
+        for(var i in json[5][1]["Data"]) {
+            flux.push({"date": new Date(json[5][1]["Data"][i]["time"] * 1000), "price": json[5][1]["Data"][i]["close"], "volume": json[5][1]["Data"][i]["volumeto"]});
+        }
+    }
+
+    return flux;
+}
+
+/**
  * Debug.
  */
-function cryptoMarketsDebug() {
-    disableCache();
+function cryptoCoinsDebug() {
     var key = getCryptoCompareKey();
-    Logger.log(cryptoMarkets(key, "usd", "btc,eth,ltc"));
+    Logger.log(cryptoCoins(key, "usd", "btc,eth,ltc"));
 }
 
 function cryptoRateDebug() {
-    disableCache();
     var key = getCryptoCompareKey();
     Logger.log(cryptoRate(key, "usd", "btc", new Date("04/10/2021")));
+}
+
+function cryptoFluxDebug() {
+    var key = getCryptoCompareKey();
+    Logger.log(cryptoFlux(key, "usd", "btc", 48, "daily"));
 }

@@ -9,7 +9,7 @@ function updateFlux(ui) {
     var sheet = SpreadsheetApp.getActive();
     var name = sheet.getSheetName();
     if(name.indexOf("Flux") == -1) {
-        ui.alert('Incorrect active sheet!');
+        ui.alert('Active sheet not a Flux sheet!');
         return;
     }
 
@@ -21,20 +21,20 @@ function updateFlux(ui) {
 
     var date;
     if(coins.hasOwnProperty(coin) && isNumeric(days) && (interval == "hourly" || interval == "daily")) {
-        var chart = apiFlux(fiat, coin, days, interval);
+        var flux = apiFlux(fiat, coin, days, interval);
 
-        if(chart != undefined) {
+        if(flux != undefined) {
             var r = 2;
-            for(var i = chart[0][1].length -1; i >= 0; i--) {
+            for(var i = flux.length -1; i >= 0; i--) {
                 r++;
 
-                date = new Date(chart[0][1][i][0]);
+                var date = flux[i]["date"];
                 date = (date.getMonth() + 1).padLeft(2) + "/" + date.getDate().padLeft(2) + "/" + date.getFullYear() +
                     " " + date.getHours().padLeft(2) + ":" + date.getMinutes().padLeft(2) + ":" + date.getSeconds().padLeft(2);
                 sheet.getRange("B" + r).setValue(date);
-                sheet.getRange("C" + r).setValue(chart[0][1][i][1]);
-                sheet.getRange("D" + r).setValue(chart[2][1][i][1]);
-                Logger.log("updateFlux:: Row: " + [date, chart[0][1][i][1], chart[2][1][i][1]]);
+                sheet.getRange("C" + r).setValue(flux[i]["price"]);
+                sheet.getRange("D" + r).setValue(flux[i]["volume"]);
+                Logger.log("updateFlux:: Row: " + [date, flux[i]["price"], flux[i]["volume"]]);
 
                 if((r - 2) == days) return true;
             }
@@ -46,13 +46,5 @@ function updateFlux(ui) {
         return;
     }
 
-    ui.alert('Invalid configuration!');
-}
-
-/**
- * Debug method.
- */
-function updateFluxDebug() {
-    disableCache();
-    updateFlux();
+    ui.alert('Invalid Flux configuration!');
 }

@@ -80,6 +80,10 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - Use secondary API (key contingent) if first fails for Coins update.
     - Made room for new ATH percentage bar indicator in Coins column L.
 
+- Version 2.2
+    - Fixed ATH not updating when using CryptoCompare API.
+    - Made flux fall-back to CryptoCompare API if CoinGecko API request failed.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.

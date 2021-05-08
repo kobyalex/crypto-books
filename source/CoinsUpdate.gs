@@ -1,9 +1,9 @@
 /**
  * Update coins sheet.
- * <p>Fetch coins data from CoinGecko API.
+ * <p>Fetch coins data from an API.
  */
 function updateCoins() {
-    var market = apiMarkets(getFiat(), getCoinNames(), getTickers());
+    var market = apiCoins(getFiat(), getCoinNames(), getTickers());
     if(Object.keys(market).length > 0) {
         var coins = getCoins();
         var stable = getStableCoins();
@@ -52,6 +52,12 @@ function updateCoins() {
                     }
                     if(market[ticker].hasOwnProperty("ath")) {
                         sheet.getRange("K" + r).setValue(market[ticker]["ath"]);
+                    } else { // Update ATH if CryptoCompare API high_24h is greater than current ATH since it lacks ATH.
+                        var high = sheet.getRange("J" + r).getValue();
+                        var ath = sheet.getRange("K" + r).getValue();
+                        if (high > ath) {
+                            sheet.getRange("K" + r).setValue(high);
+                        }
                     }
                     if(market[ticker].hasOwnProperty("price_change_24h")) {
                         sheet.getRange("M" + r).setValue(market[ticker]["price_change_24h"]);
@@ -59,8 +65,6 @@ function updateCoins() {
                     if(market[ticker].hasOwnProperty("current_price")) {
                         sheet.getRange("N" + r).setValue(market[ticker]["current_price"]);
                     }
-
-                    Logger.log("updateCoins:: Row data: " + JSON.stringify([i, r, ticker, market[ticker]]));
                 }
             }
         }
@@ -69,12 +73,4 @@ function updateCoins() {
     }
 
     return false;
-}
-
-/**
- * Debug method.
- */
-function updateCoinsDebug() {
-    disableCache();
-    updateCoins();
 }
