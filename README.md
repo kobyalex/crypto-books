@@ -84,6 +84,9 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - Fixed ATH not updating when using CryptoCompare API.
     - Made flux fall-back to CryptoCompare API if CoinGecko API request failed.
 
+- Version 2.2.1
+    - Update ATH every time it's lower than 24h high.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.

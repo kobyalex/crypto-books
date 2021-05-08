@@ -52,12 +52,12 @@ function updateCoins() {
                     }
                     if(market[ticker].hasOwnProperty("ath")) {
                         sheet.getRange("K" + r).setValue(market[ticker]["ath"]);
-                    } else { // Update ATH if CryptoCompare API high_24h is greater than current ATH since it lacks ATH.
-                        var high = sheet.getRange("J" + r).getValue();
-                        var ath = sheet.getRange("K" + r).getValue();
-                        if (high > ath) {
-                            sheet.getRange("K" + r).setValue(high);
-                        }
+                    }
+                    // Update ATH if CryptoCompare API high_24h is greater than current ATH since it lacks ATH.
+                    var high = sheet.getRange("J" + r).getValue();
+                    var ath = sheet.getRange("K" + r).getValue();
+                    if (high > ath) {
+                        sheet.getRange("K" + r).setValue(high);
                     }
                     if(market[ticker].hasOwnProperty("price_change_24h")) {
                         sheet.getRange("M" + r).setValue(market[ticker]["price_change_24h"]);
