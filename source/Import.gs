@@ -1,6 +1,5 @@
 /**
  * Imports JSON data to your spreadsheet.
- * <p>Ex: IMPORTJSON("http://myapisite.com","city/population")
  *
  * @param url URL of JSON data as string.
  * @param xpath Simplified xpath as string.
@@ -22,7 +21,7 @@ function importJson(url, xpath) {
 
         Logger.log("importJson:: Data type: " + typeof(json));
         if(typeof(json) === "undefined") {
-            return "No node";
+            return "Request returned nothing!";
 
         } else if(typeof(json) === "object") {
             var tempArr = [];
@@ -37,7 +36,7 @@ function importJson(url, xpath) {
         }
     } catch(err) {
         Logger.log("importJson:: " + err);
-        return;
+        return err.message;
     }
 }
 

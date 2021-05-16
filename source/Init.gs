@@ -26,10 +26,7 @@ function menuUpdateCoins() {
         ui.ButtonSet.OK_CANCEL);
 
     if(result == ui.Button.OK) {
-        var ok = updateCoins();
-        if(!ok) {
-            ui.alert('Error updating coins!');
-        }
+        updateCoins(ui);
     }
 }
 
@@ -44,7 +41,7 @@ function menuAddFiatValues() {
         ui.ButtonSet.OK_CANCEL);
 
     if(result == ui.Button.OK) {
-        addFiatValues();
+        addFiatValues(ui);
     }
 }
 

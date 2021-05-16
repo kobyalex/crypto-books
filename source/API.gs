@@ -2,13 +2,13 @@
  * Gets coins data.
  * <p>This is an implementation wrapper for API change capability.
  */
-function apiCoins(fiat, ids, tickers) {
-    var market = geckoCoins(fiat, ids);
+function apiCoins(ui, fiat, ids, tickers) {
+    var market = geckoCoins(ui, fiat, ids);
 
     if(market == undefined || Object.keys(market).length == 0) {
         var key = getCryptoCompareKey();
         if(key != "") {
-            market = cryptoCoins(key, fiat, tickers);
+            market = cryptoCoins(ui, key, fiat, tickers);
         }
     }
 
@@ -19,24 +19,24 @@ function apiCoins(fiat, ids, tickers) {
  * Gets coin vs fiat exchnage rate.
  * <p>This is an implementation wrapper for API change capability.
  */
-function apiRate(fiat, coin, date) {
+function apiRate(ui, fiat, coin, date) {
     var key = getCryptoCompareKey();
     if(key != "") {
-        return cryptoRate(key, fiat, coin, date);
+        return cryptoRate(ui, key, fiat, coin, date);
     }
-    return geckoRate(fiat, coin, date);
+    return geckoRate(ui, fiat, coin, date);
 }
 
 /**
  * Gets coin flux.
  */
-function apiFlux(fiat, coin, days, interval) {
-    var flux = geckoFlux(fiat, coin, days, interval);
+function apiFlux(ui, fiat, coin, days, interval) {
+    var flux = geckoFlux(ui, fiat, coin, days, interval);
 
     if(flux == undefined || Object.keys(flux).length == 0) {
         var key = getCryptoCompareKey();
         if(key != "") {
-            flux = cryptoFlux(key, fiat, coin, days, interval);
+            flux = cryptoFlux(ui, key, fiat, coin, days, interval);
         }
     }
 

@@ -87,6 +87,13 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.2.1
     - Update ATH every time it's lower than 24h high.
 
+- Version 2.2.1
+    - Update ATH every time it's lower than 24h high.
+
+- Version 2.2.2-4
+    - Updated sheet formulas.
+    - Added error returning to UI.
+
 
 ## Planned updates
 - Automatically add coin when adding trade.

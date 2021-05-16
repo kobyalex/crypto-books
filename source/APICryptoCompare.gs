@@ -2,13 +2,16 @@
  * Gets coins market data from CryptoCompare API versus given fiat.
  * <p>Documentation: https://www.coingecko.com/api/documentations/v3
  */
-function cryptoCoins(key, fiat, tickers) {
+function cryptoCoins(ui, key, fiat, tickers) {
     var market = {};
 
     disableCache();
     var json = importJson("https://min-api.cryptocompare.com/data/pricemultifull?api_key=" + key + "&tsyms=" + fiat + "&fsyms=" + tickers + "&relaxedValidation=true&extraParams=cryptoBooks2");
 
-    if(typeof(json) === "object" && json.length > 1 && json[0].length > 1) {
+    if(typeof(json) === "string") {
+        ui.alert('CryptoCompare API error: ' + json);
+
+    } else if(typeof(json) === "object" && json.length > 1 && json[0].length > 1) {
         var data, ticker;
         for(var i in json[0][1]) {
             data = json[0][1][i][fiat.toUpperCase()];
@@ -46,7 +49,10 @@ function cryptoRate(key, fiat, coin, date) {
     enableCache();
     var json = importJson("https://min-api.cryptocompare.com/data/v2/histohour?api_key=" + key + "&fsym=" + coin + "&tsym=" + fiat + "&toTs=" + (date.getTime() / 1000) + "&limit=1&extraParams=cryptoBooks2","Data.Data.0.close");
 
-    if(typeof(json) === "number") {
+    if(typeof(json) === "string") {
+        ui.alert('CryptoCompare API error: ' + json);
+
+    } else if(typeof(json) === "number") {
         return json;
     }
 
@@ -56,14 +62,17 @@ function cryptoRate(key, fiat, coin, date) {
 /**
  * Gets coin flux from CryptoCompare API for given limit and interval.
  */
-function cryptoFlux(key, fiat, coin, limit, interval) {
+function cryptoFlux(ui, key, fiat, coin, limit, interval) {
     interval = interval == "hourly" ? "histohour" : "histoday";
     var flux = [];
 
     disableCache();
     var json = importJson("https://min-api.cryptocompare.com/data/v2/" + interval + "?api_key=" + key + "&fsym=" + coin + "&tsym=" + fiat + "&limit=" + limit + "&extraParams=cryptoBooks2");
 
-    if(typeof(json) === "object" && json.length > 5 && json[5].length > 1 && json[5][1].hasOwnProperty("Data")) {
+    if(typeof(json) === "string") {
+        ui.alert('CryptoCompare API error: ' + json);
+
+    } else if(typeof(json) === "object" && json.length > 5 && json[5].length > 1 && json[5][1].hasOwnProperty("Data")) {
         for(var i in json[5][1]["Data"]) {
             flux.push({"date": new Date(json[5][1]["Data"][i]["time"] * 1000), "price": json[5][1]["Data"][i]["close"], "volume": json[5][1]["Data"][i]["volumeto"]});
         }

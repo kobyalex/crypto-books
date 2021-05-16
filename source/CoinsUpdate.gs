@@ -2,8 +2,8 @@
  * Update coins sheet.
  * <p>Fetch coins data from an API.
  */
-function updateCoins() {
-    var market = apiCoins(getFiat(), getCoinNames(), getTickers());
+function updateCoins(ui) {
+    var market = apiCoins(ui, getFiat(), getCoinNames(), getTickers());
     if(Object.keys(market).length > 0) {
         var coins = getCoins();
         var stable = getStableCoins();
@@ -69,8 +69,6 @@ function updateCoins() {
             }
         }
 
-        return true;
+        ui.alert('Coins updated!');
     }
-
-    return false;
 }

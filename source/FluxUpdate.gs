@@ -21,7 +21,7 @@ function updateFlux(ui) {
 
     var date;
     if(coins.hasOwnProperty(coin) && isNumeric(days) && (interval == "hourly" || interval == "daily")) {
-        var flux = apiFlux(fiat, coin, days, interval);
+        var flux = apiFlux(ui, fiat, coin, days, interval);
 
         if(flux != undefined) {
             var r = 2;
@@ -36,13 +36,14 @@ function updateFlux(ui) {
                 sheet.getRange("D" + r).setValue(flux[i]["volume"]);
                 Logger.log("updateFlux:: Row: " + [date, flux[i]["price"], flux[i]["volume"]]);
 
-                if((r - 2) == days) return true;
+                if((r - 2) == days) break;
             }
 
-            return;
+            ui.alert('Flux updated!');
+        } else {
+            ui.alert('Flux update failed!');
         }
 
-        ui.alert('Failed to fetch data!');
         return;
     }
 
