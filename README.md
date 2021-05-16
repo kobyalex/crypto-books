@@ -90,9 +90,10 @@ _Please do keep in mind at this point there are a lot of differences between thi
 - Version 2.2.1
     - Update ATH every time it's lower than 24h high.
 
-- Version 2.2.2-4
+- Version 2.2.2-5
     - Updated sheet formulas.
     - Added error returning to UI.
+    - Limit error return to a single API.
 
 
 ## Planned updates

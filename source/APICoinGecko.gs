@@ -8,7 +8,7 @@ function geckoCoins(ui, fiat, ids) {
     enableCache();
     var json = importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=" + fiat + "&ids=" + ids);
 
-    if(typeof(json) === "string") {
+    if(typeof(json) === "string" && getCryptoCompareKey() == "") {
         ui.alert('CoinGecko API error: ' + json);
 
     } else if(typeof(json) === "object") {
@@ -52,7 +52,7 @@ function geckoFlux(ui, fiat, coin, limit, interval) {
     enableCache();
     var json = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + limit + "&interval=" + interval);
 
-    if(typeof(json) === "string") {
+    if(typeof(json) === "string" && getCryptoCompareKey() == "") {
         ui.alert('CoinGecko API error: ' + json);
 
     } else {
