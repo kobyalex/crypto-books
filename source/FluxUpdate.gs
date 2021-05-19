@@ -38,8 +38,6 @@ function updateFlux(ui) {
 
                 if((r - 2) == days) break;
             }
-
-            ui.alert('Flux updated!');
         } else {
             ui.alert('Flux update failed!');
         }

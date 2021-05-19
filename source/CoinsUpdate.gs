@@ -68,7 +68,5 @@ function updateCoins(ui) {
                 }
             }
         }
-
-        ui.alert('Coins updated!');
     }
 }

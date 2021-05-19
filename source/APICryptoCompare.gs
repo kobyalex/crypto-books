@@ -45,7 +45,7 @@ function cryptoCoins(ui, key, fiat, tickers) {
 /**
  * Gets coin vs fiat exchnage rate from CryptoCompare API for given date.
  */
-function cryptoRate(key, fiat, coin, date) {
+function cryptoRate(ui, key, fiat, coin, date) {
     enableCache();
     var json = importJson("https://min-api.cryptocompare.com/data/v2/histohour?api_key=" + key + "&fsym=" + coin + "&tsym=" + fiat + "&toTs=" + (date.getTime() / 1000) + "&limit=1&extraParams=cryptoBooks2","Data.Data.0.close");
 

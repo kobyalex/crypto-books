@@ -40,8 +40,6 @@ function addFiatValues(ui) {
             setFiat(ui, sheet, coins, fiat, stable, date, fee_count, fee_coin, "I", "J", "K", i + 1);
         }
     }
-
-    ui.alert('Finished adding FIAT values!');
 }
 
 /**
