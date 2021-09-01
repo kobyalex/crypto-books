@@ -52,7 +52,14 @@ function getCoins() {
         }
     }
 
-    return coins;
+    var ordered = Object.keys(coins).sort().reduce(
+        (obj, key) => {
+            obj[key] = coins[key];
+            return obj;
+        }, {}
+    );
+
+    return ordered;
 }
 
 /**

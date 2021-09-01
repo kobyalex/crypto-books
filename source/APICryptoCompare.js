@@ -42,6 +42,29 @@ function cryptoCoins(ui, key, fiat, tickers) {
     return market;
 }
 
+/*
+ * Gets coin historical data for Sparkline.
+ */
+function cryptoSparkline(ui, key, coin) {
+    var fiat = getFiat();
+
+    enableCache();
+    var json = importJson("https://min-api.cryptocompare.com/data/v2/histohour?api_key=" + key + "&fsym=" + coin + "&tsym=" + fiat + "&limit=168&extraParams=cryptoBooks2");
+
+    var sparkline = [];
+    if(typeof(json) === "string") {
+        ui.alert('CryptoCompare API error: ' + json);
+
+    } else if(typeof(json) === "object" && json.length > 5 && json[5].length > 1 && json[5][1].hasOwnProperty("Data")) {
+        for (j = 0; j < json[5][1]["Data"].length; j++) {
+            sparkline.push(json[5][1]["Data"][j]["close"]);
+        }
+
+    }
+
+    return sparkline;
+}
+
 /**
  * Gets coin vs fiat exchnage rate from CryptoCompare API for given date.
  */
@@ -85,16 +108,17 @@ function cryptoFlux(ui, key, fiat, coin, limit, interval) {
  * Debug.
  */
 function cryptoCoinsDebug() {
-    var key = getCryptoCompareKey();
-    Logger.log(cryptoCoins(key, "usd", "btc,eth,ltc"));
+    Logger.log(cryptoCoins(SpreadsheetApp.getUi(), getCryptoCompareKey(), "usd", "btc,eth,ltc"));
+}
+
+function cryptoSparklineDebug() {
+    Logger.log(cryptoSparkline(SpreadsheetApp.getUi(), getCryptoCompareKey(), "ada"));
 }
 
 function cryptoRateDebug() {
-    var key = getCryptoCompareKey();
-    Logger.log(cryptoRate(key, "usd", "btc", new Date("04/10/2021")));
+    Logger.log(cryptoRate(SpreadsheetApp.getUi(), getCryptoCompareKey(), "usd", "btc", new Date("04/10/2021")));
 }
 
 function cryptoFluxDebug() {
-    var key = getCryptoCompareKey();
-    Logger.log(cryptoFlux(key, "usd", "btc", 48, "daily"));
+    Logger.log(cryptoFlux(SpreadsheetApp.getUi(), getCryptoCompareKey(), "usd", "btc", 48, "daily"));
 }

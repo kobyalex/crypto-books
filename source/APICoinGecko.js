@@ -20,6 +20,30 @@ function geckoCoins(ui, fiat, ids) {
     return market;
 }
 
+/*
+ * Gets coin historical data for Sparkline.
+ */
+function geckoSparkline(ui, coin) {
+    var fiat = getFiat();
+    var coins = getCoins();
+
+    enableCache();
+    var json = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=7&interval=hourly");
+
+    var sparkline = [];
+    if(typeof(json) === "string") {
+        // It be annoying to alert so much here for not much benefit.
+        //ui.alert('CoinGecko API error: ' + json);
+
+    } else {
+        for(var i in json[0][1]) {
+            sparkline.push(json[0][1][i][1]);
+        }
+    }
+
+    return sparkline;
+}
+
 /**
  * Gets coin vs fiat exchnage rate from CoinGecko API for given date.
  */
@@ -67,6 +91,9 @@ function geckoFlux(ui, fiat, coin, limit, interval) {
 /**
  * Debug.
  */
+function geckoSparklineDebug() {
+    Logger.log(geckoSparkline(SpreadsheetApp.getUi(), "ata"));
+}
 function geckoFluxDebug() {
     Logger.log(geckoFlux("usd", "btc", 48, "daily"));
 }

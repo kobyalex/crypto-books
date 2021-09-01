@@ -16,6 +16,26 @@ function apiCoins(ui, fiat, ids, tickers) {
 }
 
 /**
+ * Gets coins historical date for Coins workbook Sparkline.
+ * <p>This requires a CryptoCompare API key to be configured.
+ */
+function apiSparkline(ui, coin) {
+    var sparkline = [];
+
+    var key = getCryptoCompareKey();
+    if(key == "") {
+        ui.alert('This operation requires a CryptoCompare API key in Settings workbook.');
+    } else {
+        sparkline = cryptoSparkline(ui, key, coin);
+        if (sparkline.length == 0) {
+            sparkline = geckoSparkline(ui, coin);
+        }
+    }
+
+    return sparkline;
+}
+
+/**
  * Gets coin vs fiat exchnage rate.
  * <p>This is an implementation wrapper for API change capability.
  */

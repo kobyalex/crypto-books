@@ -29,22 +29,18 @@ _Please do keep in mind at this point there are a lot of differences between thi
 
 
 ## Change list
-- Version 1.1.0
+- Version 1.1
     - Refactored the code a bit.
     - Added more logging (some disabled).
     - Fixed buggy calculations.
     - Added additional data type validations.
     - Anything else I forgot.
-
-- Version 1.1.1
     - Fixed float leftovers for liquidated coins.
 
-- Version 1.2.0
+- Version 1.2
     - Removed Profit sheet and loops.
     - Added profit details to Dashboard.
     - Added new graphs to Dashboard sheet.
-
-- Version 1.2.1
     - Disabled API calls without a key.
     - Changed the recommended ordering A-Z for mathematical sense
     - Improved defaults.
@@ -56,8 +52,6 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - 98% complete rewrite.
     - Dynamic sheets formula used for all stats.
     - Corrected all calculations _(I hope)_.
-
-- Version 2.0.1-5
     - Added formula for FIAT exchange rates.
     - Added daily flux for given asset.
     - Made trades have equality between buy adn sell fiat value.
@@ -66,36 +60,41 @@ _Please do keep in mind at this point there are a lot of differences between thi
 
 - Version 2.1
     - Added CryptoCompare API for FIAT rates.
-
-- Version 2.1.1-5
     - Fixed flux and stable coins fiat values.
     - Added flux interval choice between daily and hourly.
     - Added flux volume.
-
-- Version 2.1.6-7
     - Made Flux multi-sheet by using active sheet.
     - Improved Flux update error messages.
-
-- Version 2.1.8-9
     - Use secondary API (key contingent) if first fails for Coins update.
     - Made room for new ATH percentage bar indicator in Coins column L.
 
 - Version 2.2
     - Fixed ATH not updating when using CryptoCompare API.
     - Made flux fall-back to CryptoCompare API if CoinGecko API request failed.
-
-- Version 2.2.1
     - Update ATH every time it's lower than 24h high.
-
-- Version 2.2.1
-    - Update ATH every time it's lower than 24h high.
-
-- Version 2.2.2-6
     - Updated sheet formulas.
     - Added error returning to UI.
     - Limit error return to a single API.
     - Fixed CryptoCompare add fiat values
     - Removed successful update dialog.
+    - Added free money columns for Interest, Referrals and Airdrops in Coins.							
+
+- Version 2.3
+    - Added Wallet tracking for staking wallets.							
+    - Added Wallet tracking for staked and unstaked amounts.							
+    - Upgraded wallet to be multi currency.							
+    - Upgraded wallet with FIAT values and added tracking of Wallet coins into Coins workbook.							
+    - Added Profit/Loss column to wallet workbooks.							
+    - Fixed Airdrop and Interest for wallets display in Coins.							
+    - Made Dashboard Fees graph show wallet fees as well.							
+    - Minor content updates.							
+
+- Version 2.4
+    - Updated Flux to display both Overall (Invested, Average & Profit/Loss) and just from Last liquidation. This should aid you in retaining past profits by keeping track of your current investment run.							
+    - Updated Flux graphs.							
+
+- Version 2.5
+    - Added Sparkline to Coins workbook with separate update menu option.							
 
 
 ## Planned updates
