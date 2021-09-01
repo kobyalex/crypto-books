@@ -99,6 +99,3 @@ _Please do keep in mind at this point there are a lot of differences between thi
 
 ## Planned updates
 - Automatically add coin when adding trade.
-- Add line graph to each coin.
-
-_Don't hold your breath though._
