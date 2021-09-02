@@ -21,11 +21,31 @@ _Please do keep in mind at this point there are a lot of differences between thi
 
 
 # Screenshots
-![Dashboard](assets/dashboard.v2.jpg "Dashboard")
+### Dashboard
+This workbook shows a general outlook on your portfolio with a variety of graphs.
+![Dashboard](assets/dashboard.png "Dashboard")
 
-![Portfolio](assets/portfolio.v2.jpg "Portfolio")
+### Coins
+The Coins workbook provides an individual asset outlook.
+![Coins](assets/coins.png "Coins")
 
-![Trades](assets/trades.v2.jpg "Trades")
+### Trades
+The Trades workbook is where each individual trade is tracked.
+![Trades](assets/trades.png "Trades")
+
+### Wallet
+Wallet workbooks can be many and can optionally contribute to Coins workbook.
+![Wallet](assets/wallet.png "Wallet")
+
+### Flux
+Idea utility for traders and singers to track individual investments flip by flip.
+
+- It provides hourly or daily monitoring for a coin with Overall investment and Current flip stats so you will never lose track of your current and past profits. 
+![Flux](assets/flux1.png "Flux")
+
+- It also displays the data in nice graphs and provides a printout of all trades associated with the coin.
+![Flux](assets/flux2.png "Flux")
+_Flux cannot display Wallet trades._ 
 
 
 ## Change list
@@ -97,5 +117,6 @@ _Please do keep in mind at this point there are a lot of differences between thi
     - Added Sparkline to Coins workbook with separate update menu option.							
 
 
-## Planned updates
-- Automatically add coin when adding trade.
+## To do
+- Add new coin menu option with API search.
+- Make FLux display Wallet trades as well.
