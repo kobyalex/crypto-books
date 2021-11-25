@@ -3,9 +3,6 @@
  * <p>Fetch coins data from an API.
  */
 function updateCoins(ui) {
-    // Update wallets balance.
-    updateWallets();
-
     // Update coin prices from API.
     var market = apiCoins(ui, getFiat(), getCoinNames(), getTickers());
     if(Object.keys(market).length > 0) {
@@ -19,17 +16,9 @@ function updateCoins(ui) {
         for(i = 0; i < rows.length; i++) {
             if(rows[i] != undefined && rows[i][0].length > 0) {
                 var ticker = rows[i][0].toLowerCase();
-                if(market.hasOwnProperty(ticker)) {
-                    // Skip fiat
-                    if(coins[ticker] == "fiat") {
-                        continue;
-                    }
-                    // Set stablecoins to 1
-                    if(stable.indexOf(ticker) != -1) {
-                        market[ticker]["current_price"] = 1;
-                    }
+                var r = i + 3;
 
-                    var r = i + 3;
+                if(market.hasOwnProperty(ticker)) {
                     if(market[ticker].hasOwnProperty("market_cap_rank") && market[ticker]["market_cap_rank"] != null) {
                         sheet.getRange("C" + r).setValue(market[ticker]["market_cap_rank"]);
                     }
@@ -68,6 +57,15 @@ function updateCoins(ui) {
                     }
                     if(market[ticker].hasOwnProperty("current_price") && market[ticker]["current_price"] != null) {
                         sheet.getRange("N" + r).setValue(market[ticker]["current_price"]);
+                    }
+                } else {
+                    // Set stablecoins to 1.
+                    if(ticker == getFiat() && stable.indexOf(ticker) != -1) {
+                        sheet.getRange("N" + r).setValue(1);
+                    }
+                    // Set fiat to Google Finance.
+                    else if(coins[ticker].toLowerCase() == "fiat") {
+                        sheet.getRange("N" + r).setValue('=GOOGLEFINANCE("CURRENCY:' + getFiat().toUpperCase() + ticker.toUpperCase() + '")');
                     }
                 }
             }

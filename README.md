@@ -47,6 +47,14 @@ Idea utility for traders and singers to track individual investments flip by fli
 ![Flux](assets/flux2.png "Flux")
 _Flux cannot display Wallet trades._ 
 
+### Deposits.
+Deposits workbook shows all deposits in trades and selected wallets for accounting purposes.
+![Deposits](assets/deposits.png "Deposits")
+
+### HODL
+This workbook shows all purchases in trades and selected wallets and tracks their current and ATH value, P/L and gains.
+![HODL](assets/hodl.png "HODL")
+
 
 ## Change list
 - Version 1.1
@@ -71,7 +79,7 @@ _Flux cannot display Wallet trades._
     - Removed exchanges feature due to poor performance.
     - 98% complete rewrite.
     - Dynamic sheets formula used for all stats.
-    - Corrected all calculations _(I hope)_.
+    - Corrected all calculations.
     - Added formula for FIAT exchange rates.
     - Added daily flux for given asset.
     - Made trades have equality between buy adn sell fiat value.
@@ -101,7 +109,7 @@ _Flux cannot display Wallet trades._
 
 - Version 2.3
     - Added Wallet tracking for staking wallets.							
-    - Added Wallet tracking for staked and unstaked amounts.							
+    - Added Wallet tracking for staked and un-staked amounts.							
     - Upgraded wallet to be multi currency.							
     - Upgraded wallet with FIAT values and added tracking of Wallet coins into Coins workbook.							
     - Added Profit/Loss column to wallet workbooks.							
@@ -115,8 +123,26 @@ _Flux cannot display Wallet trades._
 
 - Version 2.5
     - Added Sparkline to Coins workbook with separate update menu option.							
+    - Made Sparkline color red/green depending on period trend.				
+    - Added Loss field to Wallets.				
+    - Aligned trade types between Trades and Wallets.				
+    - Added Referral and Mining details from wallets to Coins workbook free section.				
+    - Added 24 hour Profit/Loss in Coins workbook.				
+    - Integrated deposits, gains and withdrawals from wallets into Dashboard.				
 
+- Version 2.6
+    - Updated Flux to support 5 wallets and added Deposits and HODL workbooks with support for 5 wallets. (Update by copying workbooks)				
+    - Upgraded HODL workbook to show prices at ATH, P/L, Gains and Sparkline.				
+    - Upgraded Flux, Deposits, HODL and Settings workbooks.				
+    - Added Transaction ID column to Trades and wallet Trades.				
+    - Updated Dashboard stats and Coins formulas.				
+
+- Version 2.7
+    - Added Backup and Restore functionality. (Update by copying everything)				
+    - Added menu options for creating New Wallet and Flux workbooks.				
 
 ## To do
-- Add new coin menu option with API search.
-- Make FLux display Wallet trades as well.
+- Add menu option for adding new coin with API search.
+- Import/Update wallet trades for Terra and Cosmos blockchains and perhaps others in the future.
+- Taxes workbook that will calculate taxes owed for each financial year.
+- LP token value tracking.

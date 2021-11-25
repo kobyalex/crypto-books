@@ -9,6 +9,7 @@ function getCoinNames() {
         .getRange("B3:B")
         .getValues()
         .filter(String)
+        .map(Function.prototype.call, String.prototype.trim)
         .join(",");
 
     return coins.toLowerCase().replace(/\s/g, "-");
@@ -44,32 +45,27 @@ function getCoins() {
     var coins = {};
 
     for(i = 0; i < rows.length; i++) {
-        var ticker = rows[i][0].toLowerCase();
-        var name = rows[i][1].toLowerCase().replace(/\s/g, "-");
+        var ticker = rows[i][0].trim().toLowerCase();
+        var name = rows[i][1].trim().toLowerCase().replace(/\s/g, "-");
 
         if(ticker !== "" && name !== "") {
             coins[ticker] = name;
         }
     }
 
-    var ordered = Object.keys(coins).sort().reduce(
-        (obj, key) => {
-            obj[key] = coins[key];
-            return obj;
-        }, {}
-    );
-
-    return ordered;
+    return coins;
 }
 
 /**
  * Gets FIAT.
  * <p>Reference FIAT currency.
+ * @customfunction
  */
 function getFiat() {
-    var active = SpreadsheetApp.getActive();
-    var sheet = active.getSheetByName("Settings");
-    return sheet.getRange("B1").getValue().toLowerCase();
+    return SpreadsheetApp.getActive()
+        .getSheetByName("Settings")
+        .getRange("C3")
+        .getValue().toLowerCase();
 }
 
 /**
@@ -80,7 +76,7 @@ function getStableCoins() {
     var active = SpreadsheetApp.getActive();
     var sheet = active.getSheetByName("Settings");
     var coins = sheet
-        .getRange("A3:A")
+        .getRange("A4:A")
         .getValues()
         .filter(String);
 
@@ -99,4 +95,22 @@ function getCryptoCompareKey() {
     var active = SpreadsheetApp.getActive();
     var sheet = active.getSheetByName("Settings");
     return sheet.getRange("C8").getValue().toLowerCase();
+}
+
+/**
+ * Gets Sparkline Menu option setting.
+ */
+function getSparklineMenuOption() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Settings");
+    return sheet.getRange("C13").getValue();
+}
+
+/**
+ * Gets Sparkline Auto update setting.
+ */
+function getSparklineAutoUpdate() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Settings");
+    return sheet.getRange("C14").getValue();
 }

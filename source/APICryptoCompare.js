@@ -62,6 +62,13 @@ function cryptoSparkline(ui, key, coin) {
 
     }
 
+    // Check for 100x spikes and remove them.
+    for(i = 0; i < sparkline.length; i++) {
+        if (i > 0 && sparkline[i] > sparkline[i-1] * 100) {
+            sparkline[i] = sparkline[i-1];
+        }
+    }
+
     return sparkline;
 }
 

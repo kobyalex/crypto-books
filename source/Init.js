@@ -6,44 +6,60 @@
 function onOpen() {
     var ui = SpreadsheetApp.getUi();
 
-    ui.createMenu('Crypto')
-        .addItem('Update Coins', 'menuUpdateCoins')
-        .addItem('Update Sparkline', 'menuUpdateSparkline')
-        .addItem('Add FIAT values', 'menuAddFiatValues')
-        .addItem('Update Flux', 'menuUpdateFlux')
-        .addToUi();
+    // Menu.
+    var menu = ui.createMenu('Crypto');
+
+    // New submenu.
+    menu.addSubMenu(ui.createMenu('New')
+            .addItem('Wallet', 'menuNewWallet')
+            .addItem('Flux', 'menuNewFlux')
+        );
+
+    // Add FIAT
+    menu.addItem('Add FIAT values', 'menuAddFiatValues')
+        .addSeparator()
+        .addItem('Update Coins', 'menuUpdateCoins');
+
+    if(getCryptoCompareKey() != "" && getSparklineMenuOption()) { // Add Sparkline menu item if key and option set.
+        menu.addItem('Update Sparkline', 'menuUpdateSparkline');
+    }
+
+    menu.addItem('Update Flux', 'menuUpdateFlux');
+
+    // Backup submenu.
+    menu.addSeparator()
+        .addSubMenu(ui.createMenu('Backup')
+            .addItem('Export', 'menuSheetExport')
+            .addItem('Restore', 'menuSheetRestore')
+        );
+
+    // Import menu.
+    menu.addItem('Import wallet', 'menuImport');
+
+    menu.addToUi();
+
+
+    // Trigger every minute.
+    ScriptApp.newTrigger('updateWalletsList')
+        .timeBased()
+        .everyMinutes(1)
+        .create();
 
     enableCache();
 }
 
 /**
- * Update Coins workbook.
+ * New wallet.
  */
-function menuUpdateCoins() {
-    var ui = SpreadsheetApp.getUi();
-
-    var result = ui.alert(
-        'Do you want to update Coins workbook?',
-        ui.ButtonSet.OK_CANCEL);
-
-    if(result == ui.Button.OK) {
-        updateCoins(ui);
-    }
+function menuNewWallet() {
+    newModalDialog("wallet");
 }
 
 /**
- * Update Spakrline in Coins workbook.
+ * New Flux.
  */
-function menuUpdateSparkline() {
-    var ui = SpreadsheetApp.getUi();
-
-    var result = ui.alert(
-        'Do you want to update Coins workbook spaklines?',
-        ui.ButtonSet.OK_CANCEL);
-
-    if(result == ui.Button.OK) {
-        updateSparkline(ui);
-    }
+function menuNewFlux() {
+    newModalDialog("flux");
 }
 
 /**
@@ -62,6 +78,40 @@ function menuAddFiatValues() {
 }
 
 /**
+ * Update Coins workbook.
+ */
+function menuUpdateCoins() {
+    var ui = SpreadsheetApp.getUi();
+
+    var result = ui.alert(
+        'Do you want to update Coins workbook?',
+        ui.ButtonSet.OK_CANCEL);
+
+    if(result == ui.Button.OK) {
+        updateCoins(ui);
+
+        if(getCryptoCompareKey() != "" && getSparklineAutoUpdate()) {
+            updateSparkline(ui);
+        }
+    }
+}
+
+/**
+ * Update Coins workbook Sparkline.
+ */
+function menuUpdateSparkline() {
+    var ui = SpreadsheetApp.getUi();
+
+    var result = ui.alert(
+        'Do you want to update Coins workbook Sparkline?',
+        ui.ButtonSet.OK_CANCEL);
+
+    if(result == ui.Button.OK) {
+        updateSparkline(ui);
+    }
+}
+
+/**
  * Update Flux workbook.
  */
 function menuUpdateFlux() {
@@ -73,5 +123,54 @@ function menuUpdateFlux() {
 
     if(result == ui.Button.OK) {
         updateFlux(ui);
+    }
+}
+
+/**
+ * Export sheet.
+ */
+function menuSheetExport() {
+    var ui = SpreadsheetApp.getUi();
+
+    var result = ui.alert(
+        'Do you want to backup this sheet?',
+        ui.ButtonSet.OK_CANCEL);
+
+    if(result == ui.Button.OK) {
+        sheetExport(ui);
+    }
+}
+
+/**
+ * Restore sheet.
+ */
+function menuSheetRestore() {
+    sheetRestore(SpreadsheetApp.getUi());
+}
+
+/**
+ * Import transactions.
+ */
+function menuImport() {
+    var ui = SpreadsheetApp.getUi();
+    ui.alert('Import for Terra and Cosmos wallets coming soon.', ui.ButtonSet.OK);
+}
+
+/**
+ * Update Wallets when cell H1 (Flux ticker option) changes value.
+ */
+function onEdit(e) {
+    if (e.range.getA1Notation() == 'H1') {
+        updateWallets();
+        updateWalletsList()
+    }
+}
+
+/**
+ * Update Wallets list when cells A1 (default cell), S1 or T1 (Flux wallet 1 or 2) is selected.
+ */
+function onSelectionChange(e) {
+    if (e.range.getA1Notation() == 'A1' || e.range.getA1Notation() == 'S1' || e.range.getA1Notation() == 'T1') {
+        updateWalletsList();
     }
 }

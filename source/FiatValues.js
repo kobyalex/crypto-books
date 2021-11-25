@@ -13,10 +13,12 @@ function addFiatValues(ui) {
     if(name.indexOf("Trades") != -1) {
         var trades = sheet.getRange("A2:K").getValues();
         var offset = 2;
+        var datecol = "A";
         var columns = [["C", "D", "E"], ["F", "G", "H"], ["I", "J", "K"]];
     } else if(name.indexOf("Wallet") != -1) {
         var trades = sheet.getRange("I3:S").getValues();
         var offset = 3;
+        var datecol = "I";
         var columns = [["K", "L", "M"], ["N", "O", "P"], ["Q", "R", "S"]];
     }
 
@@ -41,17 +43,17 @@ function addFiatValues(ui) {
         var isFee = fee_count > 0 && fee_coin != "" && fee_fiat === "" && coins.hasOwnProperty(fee_coin);
 
         if(isBuy && isSell) {
-            setEqualFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin, sell_count, sell_coin, [columns[0], columns[1]], offset + i);
+            setEqualFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin, sell_count, sell_coin, datecol, [columns[0], columns[1]], offset + i);
 
         } else if(isBuy) {
-            setFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin, columns[0], offset + i);
+            setFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin, datecol, columns[0], offset + i);
 
         } else if(isSell) {
-            setFiat(ui, sheet, coins, fiat, stable, date, sell_count, sell_coin, columns[1], offset + i);
+            setFiat(ui, sheet, coins, fiat, stable, date, sell_count, sell_coin, datecol, columns[1], offset + i);
         }
 
         if(isFee) {
-            setFiat(ui, sheet, coins, fiat, stable, date, fee_count, fee_coin, columns[2], offset + i);
+            setFiat(ui, sheet, coins, fiat, stable, date, fee_count, fee_coin, datecol, columns[2], offset + i);
         }
     }
 }
@@ -60,7 +62,7 @@ function addFiatValues(ui) {
  * Set fiat value for combined buy and sell.
  * <p>In this case the fiat value will be equal to both.
  */
-function setEqualFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin, sell_count, sell_coin, columns, row) {
+function setEqualFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin, sell_count, sell_coin, datecol, columns, row) {
     var buyCoinName = coins[buy_coin];
     var sellCoinName = coins[sell_coin];
 
@@ -81,11 +83,11 @@ function setEqualFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin,
         }
     } else if(coinName == "fiat" && stable.indexOf(coin) == -1) {
         if(coinName == buyCoinName) {
-            sheet.getRange(columns[0][2] + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columns[0][1] + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * " + columns[0][0] + row);
+            sheet.getRange(columns[0][2] + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columns[0][1] + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(" + datecol + row + ")), 2, 2) * " + columns[0][0] + row);
             sheet.getRange(columns[1][2] + row).setValue("=" + columns[0][2] + row);
         } else {
             sheet.getRange(columns[0][2] + row).setValue("=" + columns[1][2] + row);
-            sheet.getRange(columns[1][2] + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columns[1][1] + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * " + columns[1][0] + row);
+            sheet.getRange(columns[1][2] + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columns[1][1] + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(" + datecol + row + ")), 2, 2) * " + columns[1][0] + row);
         }
     } else {
         if(coinName == buyCoinName) {
@@ -111,13 +113,13 @@ function setEqualFiat(ui, sheet, coins, fiat, stable, date, buy_count, buy_coin,
 /**
  * Set fiat value for field.
  */
-function setFiat(ui, sheet, coins, fiat, stable, date, count, coin, columns, row) {
+function setFiat(ui, sheet, coins, fiat, stable, date, count, coin, datecol, columns, row) {
     var coinName = coins[coin];
     if(coinName.toLowerCase() == "fiat" || stable.indexOf(coin) != -1) {
         if(coin == fiat || stable.indexOf(coin) != -1) {
             sheet.getRange(columns[2] + row).setValue("=" + columns[0] + row);
         } else {
-            sheet.getRange(columns[2] + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columns[1] + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(A" + row + ")), 2, 2) * " + columns[0] + row);
+            sheet.getRange(columns[2] + row).setValue("=INDEX(GOOGLEFINANCE(CONCAT(\"CURRENCY:\", CONCAT(" + columns[1] + row + ", \"" + fiat.toUpperCase() + "\")), \"price\", TO_DATE(" + datecol + row + ")), 2, 2) * " + columns[0] + row);
         }
     } else {
         var rate = apiRate(ui, fiat, coin, date);

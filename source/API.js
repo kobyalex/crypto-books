@@ -23,9 +23,7 @@ function apiSparkline(ui, coin) {
     var sparkline = [];
 
     var key = getCryptoCompareKey();
-    if(key == "") {
-        ui.alert('This operation requires a CryptoCompare API key in Settings workbook.');
-    } else {
+    if(key != "") {
         sparkline = cryptoSparkline(ui, key, coin);
         if (sparkline.length == 0) {
             sparkline = geckoSparkline(ui, coin);
