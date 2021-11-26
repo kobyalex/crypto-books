@@ -11,9 +11,9 @@ function onOpen() {
 
     // New submenu.
     menu.addSubMenu(ui.createMenu('New')
-            .addItem('Wallet', 'menuNewWallet')
-            .addItem('Flux', 'menuNewFlux')
-        );
+        .addItem('Wallet', 'menuNewWallet')
+        .addItem('Flux', 'menuNewFlux')
+    );
 
     // Add FIAT
     menu.addItem('Add FIAT values', 'menuAddFiatValues')
@@ -40,10 +40,8 @@ function onOpen() {
 
 
     // Trigger every minute.
-    ScriptApp.newTrigger('updateWalletsList')
-        .timeBased()
-        .everyMinutes(1)
-        .create();
+    ScriptApp.newTrigger('updateWallets').timeBased().everyMinutes(1).create();
+    ScriptApp.newTrigger('updateWalletsList').timeBased().everyMinutes(1).create();
 
     enableCache();
 }
@@ -157,7 +155,7 @@ function menuImport() {
 }
 
 /**
- * Update Wallets when cell H1 (Flux ticker option) changes value.
+ * Update Wallets and Wallets list when cell H1 changes state.
  */
 function onEdit(e) {
     if (e.range.getA1Notation() == 'H1') {
@@ -167,10 +165,11 @@ function onEdit(e) {
 }
 
 /**
- * Update Wallets list when cells A1 (default cell), S1 or T1 (Flux wallet 1 or 2) is selected.
+ * Update Wallets list when cells A1 selected (workbook is selected first time).
  */
 function onSelectionChange(e) {
-    if (e.range.getA1Notation() == 'A1' || e.range.getA1Notation() == 'S1' || e.range.getA1Notation() == 'T1') {
+    if (e.range.getA1Notation() == 'A1') {
+
         updateWalletsList();
     }
 }

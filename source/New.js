@@ -47,6 +47,7 @@ function newWallet(name) {
         var book = sheet.getSheetByName(name);
         book.showSheet();
         book.activate();
+        updateWalletsList()
 
     } else {
         ui.alert('Wallet template workbook not found!', ui.ButtonSet.OK);
