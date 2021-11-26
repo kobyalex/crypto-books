@@ -9,11 +9,11 @@ function updateFlux(ui) {
     var sheet = SpreadsheetApp.getActive();
     var name = sheet.getSheetName();
     if(name.indexOf("Flux") == -1) {
-        ui.alert('Active workbook is not a Flux type!');
+        ui.alert('Active workbook is not of Flux type!');
         return;
     }
 
-    var settings = sheet.getRange("A1:F1").getValues();
+    var settings = sheet.getRange("A2:F2").getValues();
     var days = settings[0][1];
     var coin = settings[0][3].toLowerCase();
     var interval = settings[0][5];
@@ -24,7 +24,7 @@ function updateFlux(ui) {
         var flux = apiFlux(ui, fiat, coin, days, interval);
 
         if(flux != undefined) {
-            var r = 2;
+            var r = 3; // Last header row.
             for(var i = flux.length -1; i >= 0; i--) {
                 r++;
 

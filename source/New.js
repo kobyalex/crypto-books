@@ -67,7 +67,7 @@ function newFlux(ticker) {
 
         var book = sheet.getSheetByName(name);
         book.showSheet();
-        book.getRange("D1").setValue(ticker);
+        book.getRange("D2").setValue(ticker);
         book.activate();
         updateFlux();
 
