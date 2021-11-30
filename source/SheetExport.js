@@ -1,22 +1,26 @@
 /**
- * Gets backup data from all workbooks.
+ * Gets export data from all workbooks.
  */
 function sheetExport(ui) {
     var data = {};
 
-    // Backup Coins.
+    // Export Coins.
     data["Coins"] = {
-        coins: backupRange("Coins", "A3:B"),
-        comments: backupRange("Coins", "AD3:AE")
+        coins: exportRange("Coins", "A3:B"),
+        comments: exportRange("Coins", "AD3:AE")
     };
 
-    // Backup Trades.
-    data["Trades"] = backupRange("Trades", "A2:M");
+    // Export Trades.
+    data["Trades"] = exportRange("Trades", "A2:M");
 
-    // Backup Wallets and Flux.
+    // Export Wallets and Flux.
     var skip = ["wallet", "flux"];
     var sheet = SpreadsheetApp.getActiveSpreadsheet();
     var books = sheet.getSheets();
+    data["sort"] = {
+        wallets: [],
+        flux: []
+    };
     for (var i = 0; i < books.length; i++) {
         var book = books[i];
         var name = book.getName();
@@ -26,36 +30,52 @@ function sheetExport(ui) {
         }
 
         if (name.toLowerCase().endsWith("wallet")) {
+            data["sort"].wallets.push(name);
             data[name] = {
                 inCoins: book.getRange("H1").getValue(),
-                trades: backupRange(name, "I3:U")
+                trades: exportRange(name, "I3:U")
             };
         } else if (name.toLowerCase().startsWith("flux")) {
+            data["sort"].flux.push(name);
             data[name] = {
                 results: book.getRange("B1").getValue(),
                 ticker: book.getRange("D1").getValue(),
                 interval: book.getRange("F1").getValue(),
                 inTrades: book.getRange("R1").getValue(),
-                wallets: backupRange(name, "T1:X1")
+                wallets: exportRange(name, "T1:X1")
             };
         }
     }
 
-    // Backup Deposits.
+    // Export Deposits.
     data["Deposits"] = {
         inTrades: sheet.getSheetByName("Deposits").getRange("B2").getValue(),
-        wallets: backupRange("Deposits", "D2:H2")
+        wallets: exportRange("Deposits", "D2:H2")
     };
 
-    // Backup HODL.
+    // Export Staking.
+    data["Staking"] = {
+        inTrades: sheet.getSheetByName("Staking").getRange("F2").getValue(),
+        wallets: exportRange("Staking", "H2:M2")
+    };
+
+    // Export Free.
+    data["Free"] = {
+        inTrades: sheet.getSheetByName("Free").getRange("J2").getValue(),
+        trades: exportRange("Free", "N1:R1"),
+        wallets: exportRange("Free", "L2:Q2")
+    };
+
+
+    // Export HODL.
     data["HODL"] = {
         inTrades: sheet.getSheetByName("HODL").getRange("B2").getValue(),
-        wallets: backupRange("HODL", "D2:I2")
+        wallets: exportRange("HODL", "D2:I2")
     };
 
-    // Backup Settings.
+    // Export Settings.
     data["Settings"] = {
-        stableCoins: backupRange("Settings", "A4:A"),
+        stableCoins: exportRange("Settings", "A4:A"),
         fiat: sheet.getSheetByName("Settings").getRange("C3").getValue(),
         apiKey: sheet.getSheetByName("Settings").getRange("C8").getValue(),
         menuOption: sheet.getSheetByName("Settings").getRange("C13").getValue(),
@@ -90,7 +110,7 @@ function sheetExport(ui) {
 /**
  * Gets range values.
  */
-function backupRange(book, range) {
+function exportRange(book, range) {
     return SpreadsheetApp.getActive()
         .getSheetByName(book)
         .getRange(range)
@@ -98,6 +118,7 @@ function backupRange(book, range) {
         .map(list => {
             if (list[0] instanceof Date) {
                 var d = list[0];
+                d.setHours(d.getHours()-1);
                 list[0] = [d.getMonth()+1, d.getDate(), d.getFullYear()].join('/')+' '+ [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
             }
             return list;

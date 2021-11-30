@@ -75,28 +75,59 @@ function restore(file) {
         // Add wallets.
         var wallet = sheet.getSheetByName("Wallet");
         if (wallet !== null) {
-            for (const [key, value] of Object.entries(json)) {
-                if (key.toLowerCase().endsWith("wallet")) {
+            if (json.hasOwnProperty("sort")) {
+                var list = json["sort"].wallets;
+                for (var i = 0; i < list.length; i++) {
+                    var key = list[i];
+
                     wallet.copyTo(sheet).setName(key);
                     book = sheet.getSheetByName(key);
                     book.showSheet();
+
                     book.getRange("H1").setValue(json[key].inCoins);
                     book.getRange("I3:U" + (json[key].trades.length + 2)).setValues(json[key].trades);
+                }
+            } else {
+                for (const [key, value] of Object.entries(json)) {
+                    if (key.toLowerCase().endsWith("wallet")) {
+                        wallet.copyTo(sheet).setName(key);
+                        book = sheet.getSheetByName(key);
+                        book.showSheet();
+                        book.getRange("H1").setValue(json[key].inCoins);
+                        book.getRange("I3:U" + (json[key].trades.length + 2)).setValues(json[key].trades);
+                    }
                 }
             }
         }
         var flux = sheet.getSheetByName("Flux");
         if (flux !== null) {
-            for (const [key, value] of Object.entries(json)) {
-                if (key.toLowerCase().startsWith("flux")) {
+            if (json.hasOwnProperty("sort")) {
+                var list = json["sort"].flux;
+                for (var i = 0; i < list.length; i++) {
+                    var key = list[i];
+
                     flux.copyTo(sheet).setName(key);
                     book = sheet.getSheetByName(key);
                     book.showSheet();
+
                     book.getRange("B1").setValue(json[key].results);
                     book.getRange("D1").setValue(json[key].ticker);
                     book.getRange("F1").setValue(json[key].interval);
                     book.getRange("R1").setValue(json[key].inTrades);
                     book.getRange("T1:X1").setValues(json[key].wallets);
+                }
+            } else {
+                for (const [key, value] of Object.entries(json)) {
+                    if (key.toLowerCase().startsWith("flux")) {
+                        flux.copyTo(sheet).setName(key);
+                        book = sheet.getSheetByName(key);
+                        book.showSheet();
+                        book.getRange("B1").setValue(json[key].results);
+                        book.getRange("D1").setValue(json[key].ticker);
+                        book.getRange("F1").setValue(json[key].interval);
+                        book.getRange("R1").setValue(json[key].inTrades);
+                        book.getRange("T1:X1").setValues(json[key].wallets);
+                    }
                 }
             }
         }
@@ -106,6 +137,18 @@ function restore(file) {
         book.activate();
         book.getRange("B2").setValue(json["Deposits"].inTrades);
         book.getRange("D2:H2").setValues(json["Deposits"].wallets);
+
+        // Restore Staking.
+        book = sheet.getSheetByName("Staking");
+        book.activate();
+        book.getRange("F2").setValue(json["Staking"].inTrades);
+        book.getRange("H2:M2").setValues(json["Staking"].wallets);
+
+        // Restore Free.
+        book = sheet.getSheetByName("Free");
+        book.activate();
+        book.getRange("J2").setValue(json["Free"].inTrades);
+        book.getRange("L2:Q2").setValues(json["Free"].wallets);
 
         // Restore HODL.
         book = sheet.getSheetByName("HODL");
@@ -132,6 +175,12 @@ function restore(file) {
 
     // Move workbooks.
     sheet.getSheetByName("Deposits").activate();
+    sheet.moveActiveSheet(sheet.getNumSheets());
+
+    sheet.getSheetByName("Staking").activate();
+    sheet.moveActiveSheet(sheet.getNumSheets());
+
+    sheet.getSheetByName("Free").activate();
     sheet.moveActiveSheet(sheet.getNumSheets());
 
     sheet.getSheetByName("HODL").activate();
