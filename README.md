@@ -137,13 +137,16 @@ This workbook shows all purchases in trades and selected wallets and tracks thei
     - Added Transaction ID column to Trades and wallet Trades.				
     - Updated Dashboard stats and Coins formulas.				
 
-- Version 2.14
+- Version 2.7
     - Added Backup and Restore functionality. (Update by copying everything)				
     - Added menu options for creating New Wallet and Flux workbooks.
     - Added Staking workbook that shows staked/available/total for each staked coin.				
     - Added Free workbook that shows value over time of free coins like Airdrop, Interest, Gift, Referral, Mining.				
     - Added staking details section to Coins.				
-    				
+    - Fixed Export/Restore of Free and HODL workbooks.				
+
+- Version 2.8
+    - Added support for LP token pairs from Terra blockchain and other improvements.    				
 
 ## Roadmap
 - Import/Update wallet trades for Terra and Cosmos blockchains and perhaps others in the future.

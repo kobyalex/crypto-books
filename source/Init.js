@@ -1,175 +1,99 @@
 /**
- * @OnlyCurrentDoc
- *
- * Initialize
+ * Gets coins market data from CoinGecko API versus given fiat.
+ * <p>Documentation: https://www.coingecko.com/api/documentations/v3
  */
-function onOpen() {
-    var ui = SpreadsheetApp.getUi();
-
-    // Menu.
-    var menu = ui.createMenu('Crypto');
-
-    // New submenu.
-    menu.addSubMenu(ui.createMenu('New')
-        .addItem('Wallet', 'menuNewWallet')
-        .addItem('Flux', 'menuNewFlux')
-    );
-
-    // Add FIAT
-    menu.addItem('Add FIAT values', 'menuAddFiatValues')
-        .addSeparator()
-        .addItem('Update Coins', 'menuUpdateCoins');
-
-    if(getCryptoCompareKey() != "" && getSparklineMenuOption()) { // Add Sparkline menu item if key and option set.
-        menu.addItem('Update Sparkline', 'menuUpdateSparkline');
-    }
-
-    menu.addItem('Update Flux', 'menuUpdateFlux');
-
-    // Backup submenu.
-    menu.addSeparator()
-        .addSubMenu(ui.createMenu('Backup')
-            .addItem('Export', 'menuSheetExport')
-            .addItem('Restore', 'menuSheetRestore')
-        );
-
-    // Import menu.
-    menu.addItem('Import wallet', 'menuImport');
-
-    menu.addToUi();
-
-
-    // Trigger every minute.
-    ScriptApp.newTrigger('updateWallets').timeBased().everyMinutes(1).create();
-    ScriptApp.newTrigger('updateWalletsList').timeBased().everyMinutes(1).create();
+function geckoCoins(ui, fiat, ids) {
+    var market = {};
 
     enableCache();
-}
+    var json = importJson("https://api.coingecko.com/api/v3/coins/markets?vs_currency=" + fiat + "&ids=" + ids);
 
-/**
- * New wallet.
- */
-function menuNewWallet() {
-    newModalDialog("wallet");
-}
+    if(typeof(json) === "string" && getCryptoCompareKey() == "") {
+        ui.alert('CoinGecko API error: ' + json);
 
-/**
- * New Flux.
- */
-function menuNewFlux() {
-    newModalDialog("flux");
-}
-
-/**
- * Add fiat values to Trades of Wallet workbooks.
- */
-function menuAddFiatValues() {
-    var ui = SpreadsheetApp.getUi();
-
-    var result = ui.alert(
-        'Do you want to populate FIAT values in this workbook?',
-        ui.ButtonSet.OK_CANCEL);
-
-    if(result == ui.Button.OK) {
-        addFiatValues(ui);
-    }
-}
-
-/**
- * Update Coins workbook.
- */
-function menuUpdateCoins() {
-    var ui = SpreadsheetApp.getUi();
-
-    var result = ui.alert(
-        'Do you want to update Coins workbook?',
-        ui.ButtonSet.OK_CANCEL);
-
-    if(result == ui.Button.OK) {
-        updateCoins(ui);
-
-        if(getCryptoCompareKey() != "" && getSparklineAutoUpdate()) {
-            updateSparkline(ui);
+    } else if(typeof(json) === "object") {
+        for(var i in json) {
+            market[json[i][1]["symbol"].toLowerCase()] = json[i][1];
         }
     }
+
+    return market;
 }
 
-/**
- * Update Coins workbook Sparkline.
+/*
+ * Gets coin historical data for Sparkline.
  */
-function menuUpdateSparkline() {
-    var ui = SpreadsheetApp.getUi();
+function geckoSparkline(ui, coin) {
+    var fiat = getFiat();
+    var coins = getCoins();
 
-    var result = ui.alert(
-        'Do you want to update Coins workbook Sparkline?',
-        ui.ButtonSet.OK_CANCEL);
+    enableCache();
+    var json = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=7&interval=hourly");
 
-    if(result == ui.Button.OK) {
-        updateSparkline(ui);
+    var sparkline = [];
+    if(typeof(json) === "string") {
+        // It be annoying to alert so much here for not much benefit.
+        //ui.alert('CoinGecko API error: ' + json);
+
+    } else {
+        for(var i in json[0][1]) {
+            sparkline.push(json[0][1][i][1]);
+        }
     }
+
+    return sparkline;
 }
 
 /**
- * Update Flux workbook.
+ * Gets coin vs fiat exchnage rate from CoinGecko API for given date.
  */
-function menuUpdateFlux() {
-    var ui = SpreadsheetApp.getUi();
+function geckoRate(ui, fiat, coin, date) {
+    var coins = getCoins();
+    date = date.getDate().padLeft(2) + "-" + (date.getMonth() + 1).padLeft(2) + "-" + date.getFullYear();
 
-    var result = ui.alert(
-        'Do you want to update current Flux workbook?',
-        ui.ButtonSet.OK_CANCEL);
+    enableCache();
+    var json = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/history?date=" + date, "market_data.current_price." + fiat);
 
-    if(result == ui.Button.OK) {
-        updateFlux(ui);
+    if(typeof(json) === "string") {
+        ui.alert('CoinGecko API error: ' + json);
+        return;
+
+    } else if(typeof(json) === "number") {
+        return json;
     }
+
+    return;
 }
 
 /**
- * Export sheet.
+ * Gets coin flux from CoinGecko API for given limit and interval.
  */
-function menuSheetExport() {
-    var ui = SpreadsheetApp.getUi();
+function geckoFlux(ui, fiat, coin, limit, interval) {
+    var coins = getCoins();
+    limit = interval == "hourly" ? Math.ceil(limit / 24) : limit;
+    var flux = [];
 
-    var result = ui.alert(
-        'Do you want to backup this sheet?',
-        ui.ButtonSet.OK_CANCEL);
+    enableCache();
+    var json = importJson("https://api.coingecko.com/api/v3/coins/" + coins[coin] + "/market_chart?vs_currency=" + fiat + "&days=" + limit + "&interval=" + interval);
 
-    if(result == ui.Button.OK) {
-        sheetExport(ui);
+    if(typeof(json) === "string" && getCryptoCompareKey() == "") {
+        ui.alert('CoinGecko API error: ' + json);
+
+    } else {
+        for(var i in json[0][1]) {
+            flux.push({"date": new Date(json[0][1][i][0]), "price": json[0][1][i][1], "volume": json[2][1][i][1]});
+        }
     }
+
+    return flux;
 }
 
 /**
- * Restore sheet.
+ * Debug.
  */
-function menuSheetRestore() {
-    sheetRestore(SpreadsheetApp.getUi());
+function geckoSparklineDebug() {
+    Logger.log(geckoSparkline(SpreadsheetApp.getUi(), "ata"));
 }
-
-/**
- * Import transactions.
- */
-function menuImport() {
-    var ui = SpreadsheetApp.getUi();
-    ui.alert('Import for Terra and Cosmos wallets coming soon.', ui.ButtonSet.OK);
-}
-
-/**
- * Update Wallets and Wallets list when cell H1 changes state.
- */
-function onEdit(e) {
-    if (e.range.getA1Notation() == 'H1') {
-        updateWallets();
-        updateWalletsList()
-    }
-}
-
-/**
- * Update Wallets list when cells A1 selected (workbook is selected first time).
- */
-function onSelectionChange(e) {
-    if (e.range.getA1Notation() == 'A1') {
-
-        updateWalletsList();
-    }
+function geckoFluxDebug() {
+    Logger.log(geckoFlux("usd", "btc", 48, "daily"));
 }

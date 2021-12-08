@@ -7,7 +7,7 @@ function sheetRestore(ui) {
     var folder = DriveApp.getFileById(sheet.getId()).getParents().next().getId();
     var files = DriveApp.getFolderById(folder).getFiles();
 
-    var html = '<div style="font-family:\'Google Sans\',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;font-size:16px;">';
+    var html = '<div style="font-family:\'Google Sans\',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;font-size:14px;">';
 
     var options = '';
     while (files.hasNext()){
@@ -16,17 +16,17 @@ function sheetRestore(ui) {
     }
 
     if (options.length > 0) {
-        html += '<p><b>Select drive backup:</b></p>' +
-            '<p><select style="font-size:14px;padding:2px 5px;" id="restore">' + options + '</select></p>' +
-            '<p><button style="font-size:14px;padding:2px 5px;" type="button"' +
-            ' onclick="google.script.run.withSuccessHandler().restore(document.getElementById(\'restore\').value);google.script.host.close()">Restore</button></p>';
+        html += '<div><b>Select drive backup:</b></div>' +
+            '<div style="padding: 5px 0;"><select style="font-size:14px;padding:2px 5px;" id="restore">' + options + '</select></div>' +
+            '<div><button style="font-size:14px;padding:2px 5px;" type="button"' +
+            ' onclick="google.script.run.withSuccessHandler().restore(document.getElementById(\'restore\').value);google.script.host.close()">Restore</button></div>';
     } else {
         html += 'No backup found in sheet folder!';
     }
 
     html += '</div>';
 
-    // Display a modal dialog to pick back-up.
+    // Display a modal dialog to pick backup.
     var htmlOutput = HtmlService
         .createHtmlOutput(html)
         .setSandboxMode(HtmlService.SandboxMode.IFRAME)
@@ -47,6 +47,9 @@ function restore(file) {
 
         var sheet = SpreadsheetApp.getActiveSpreadsheet();
 
+        // Clear data.
+        clearContent(ui);
+
         // Restore Coins.
         var book = sheet.getSheetByName("Coins");
         book.activate();
@@ -61,16 +64,6 @@ function restore(file) {
         book = sheet.getSheetByName("Trades");
         book.activate();
         book.getRange("A2:M" + (json["Trades"].length + 1)).setValues(json["Trades"]);
-
-        // Delete wallet and flux workbooks.
-        var active = SpreadsheetApp.getActive();
-        var list = active.getSheets();
-        for (var i = 0; i < list.length; i++) {
-            var name = list[i].getName().toLowerCase();
-            if (name != "wallet" && name != "flux" && (name.endsWith("wallet") || name.startsWith("flux"))) {
-                sheet.deleteSheet(sheet.getSheetByName(list[i].getName()));
-            }
-        }
 
         // Add wallets.
         var wallet = sheet.getSheetByName("Wallet");
@@ -147,14 +140,15 @@ function restore(file) {
         // Restore Free.
         book = sheet.getSheetByName("Free");
         book.activate();
-        book.getRange("J2").setValue(json["Free"].inTrades);
-        book.getRange("L2:Q2").setValues(json["Free"].wallets);
+        book.getRange("L2").setValue(json["Free"].inTrades);
+        book.getRange("O1:S1").setValues(json["Free"].trades);
+        book.getRange("N2:S2").setValues(json["Free"].wallets);
 
         // Restore HODL.
         book = sheet.getSheetByName("HODL");
         book.activate();
-        book.getRange("B2").setValue(json["HODL"].inTrades);
-        book.getRange("D2:I2").setValues(json["HODL"].wallets);
+        book.getRange("H2").setValue(json["HODL"].inTrades);
+        book.getRange("K2:P2").setValues(json["HODL"].wallets);
 
         // Restore Settings.
         book = sheet.getSheetByName("Settings");
@@ -200,11 +194,4 @@ function restore(file) {
     ui.alert(
         'Restore complete. Please update Coins, Sparkline and Flux.',
         ui.ButtonSet.OK);
-}
-
-/**
- * Debug.
- */
-function restoreDebug() {
-    restore("1c1TIsA-TQ_UpZ6dVggcZG2e9sNr9-ATS");
 }

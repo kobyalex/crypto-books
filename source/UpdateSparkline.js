@@ -1,5 +1,5 @@
 /**
- * Update coins workbook sparkline.
+ * Update sparkline workbook.
  * <p>Fetch coins historical data from an API.
  */
 function updateSparkline(ui) {

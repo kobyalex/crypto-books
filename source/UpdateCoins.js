@@ -14,7 +14,7 @@ function updateCoins(ui) {
         var rows = sheet.getRange("A3:A").getValues();
 
         for(i = 0; i < rows.length; i++) {
-            if(rows[i] != undefined && rows[i][0].length > 0) {
+            if(rows[i] != undefined && rows[i].length > 0 && rows[i][0].length > 0) {
                 var ticker = rows[i][0].toLowerCase();
                 var r = i + 3;
 
@@ -64,9 +64,15 @@ function updateCoins(ui) {
                         sheet.getRange("N" + r).setValue(1);
                     }
                     // Set fiat to Google Finance.
-                    else if(coins[ticker].toLowerCase() == "fiat") {
+                    else if(coins[ticker] != undefined && coins[ticker].toLowerCase() == "fiat") {
                         sheet.getRange("N" + r).setValue('=GOOGLEFINANCE("CURRENCY:' + getFiat().toUpperCase() + ticker.toUpperCase() + '")');
                     }
+                    // Set LP to fetch from Pairs workbook.
+                    else if(coins[ticker] != undefined && coins[ticker].toLowerCase() == "lp") {
+                        sheet.getRange("E" + r).setValue('=IFNA(VLOOKUP($A' + r + ', Pairs!$A$3:$I, 7, false))');
+                        sheet.getRange("N" + r).setValue('=IFNA(VLOOKUP($A' + r + ', Pairs!$A$3:$I, 9, false))');
+                    }
+
                 }
             }
         }

@@ -61,16 +61,16 @@ function sheetExport(ui) {
 
     // Export Free.
     data["Free"] = {
-        inTrades: sheet.getSheetByName("Free").getRange("J2").getValue(),
-        trades: exportRange("Free", "N1:R1"),
-        wallets: exportRange("Free", "L2:Q2")
+        inTrades: sheet.getSheetByName("Free").getRange("L2").getValue(),
+        trades: exportRange("Free", "O1:S1"),
+        wallets: exportRange("Free", "N2:S2")
     };
 
 
     // Export HODL.
     data["HODL"] = {
-        inTrades: sheet.getSheetByName("HODL").getRange("B2").getValue(),
-        wallets: exportRange("HODL", "D2:I2")
+        inTrades: sheet.getSheetByName("HODL").getRange("H2").getValue(),
+        wallets: exportRange("HODL", "K2:P2")
     };
 
     // Export Settings.
@@ -95,9 +95,9 @@ function sheetExport(ui) {
     var htmlOutput = HtmlService
         .createHtmlOutput(
             '<div style="font-family:\'Google Sans\',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;font-size:16px;">' +
-            '<p><b>Backup saved to drive:</b></p>' +
-            '<p>' + name + '</p>' +
-            '<p><a href="' + file.getDownloadUrl() + '">Download</a></p>' +
+            '<div><b>Backup saved to drive:</b></div>' +
+            '<div>' + name + '</div>' +
+            '<div><a href="' + file.getDownloadUrl() + '">Download</a></div>' +
             '</div>'
         )
         .setSandboxMode(HtmlService.SandboxMode.IFRAME)

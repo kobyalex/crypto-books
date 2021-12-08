@@ -41,7 +41,9 @@ function updateWallets() {
 
     var sheet = active.getSheetByName("Wallets");
     sheet.getRange("B2:C").clearContent();
-    sheet.getRange("B2:C" + (ret.length + 1)).setValues(ret);
+    if (ret.length > 0) {
+        sheet.getRange("B2:C" + (ret.length + 1)).setValues(ret);
+    }
 }
 
 /**
@@ -57,5 +59,7 @@ function updateWalletsList() {
         ret.push([list[i]]);
     }
     sheet.getRange("A3:A").clearContent();
-    sheet.getRange("A3:A" + (list.length + 2)).setValues(ret);
+    if (ret.length > 0) {
+        sheet.getRange("A3:A" + (list.length + 2)).setValues(ret);
+    }
 }
