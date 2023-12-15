@@ -31,14 +31,14 @@ function apiSparkline(ui, coin) {
     var key = getCryptoCompareKey();
     if (key != "") {
         sparkline = cryptoSparkline(ui, key, coin);
-        if (sparkline.length == 0) {
-            // Added CoinGecko Demo API key by Koby
-            var geckoKey = getCoinGeckoDemoKey();
-            if (geckoKey != "") {
-                sparkline = geckoSparklineDemo(ui, geckoKey, coin);
-            }
-            // sparkline = geckoSparkline(ui, coin);
+    }
+    if (sparkline.length == 0) {
+        // Added CoinGecko Demo API key by Koby
+        var geckoKey = getCoinGeckoDemoKey();
+        if (geckoKey != "") {
+            sparkline = geckoSparklineDemo(ui, geckoKey, coin);
         }
+        // sparkline = geckoSparkline(ui, coin);
     }
 
     return sparkline;
@@ -55,11 +55,14 @@ function apiRate(ui, fiat, coin, date) {
         rate = cryptoRate(ui, key, fiat, coin, date);
     }
     // Added CoinGecko Demo API key by Koby
-    var geckoKey = getCoinGeckoDemoKey();
-    if (geckoKey != "") {
-        rate = geckoRateDemo(ui, geckoKey, fiat, coin, date);
+    if (rate == undefined) {
+        var geckoKey = getCoinGeckoDemoKey();
+        if (geckoKey != "") {
+            rate = geckoRateDemo(ui, geckoKey, fiat, coin, date);
+        }
     }
-    return rate
+
+    return rate;
 }
 
 /**
