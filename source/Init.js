@@ -27,7 +27,7 @@ function onOpen() {
     update.addItem("Pairs workbook", "menuUpdatePairs");
   }
 
-  if (getCryptoCompareKey() != "" && getSparklineMenuOption()) {
+  if ((getCryptoCompareKey() != "" || getCoinGeckoDemoKey() != "") && getSparklineMenuOption()) {
     // Add Sparkline menu item if key and option set.
     update.addItem("Sparkline workbook", "menuUpdateSparkline");
   }
@@ -102,8 +102,7 @@ function menuUpdateCoins() {
     }
 
     updateCoins(ui);
-
-    if (getCryptoCompareKey() != "" && getSparklineAutoUpdate()) {
+    if ((getCryptoCompareKey() != "" || getCoinGeckoDemoKey() != "") && getSparklineAutoUpdate()) {
       updateSparkline(ui);
     }
   }
