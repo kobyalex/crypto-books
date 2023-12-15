@@ -1,16 +1,16 @@
 /**
  * Pad left Number prototype.
  */
-Number.prototype.padLeft = function(n, str) {
-    return Array(n - String(this).length + 1).join(str || '0') + this;
-}
+Number.prototype.padLeft = function (n, str) {
+  return Array(n - String(this).length + 1).join(str || "0") + this;
+};
 
 /**
  * Is number.
  * @customfunction
  */
 function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 /**
@@ -18,5 +18,5 @@ function isNumeric(n) {
  * @customfunction
  */
 function isPositive(n, e) {
-    return n > 0 ? n : e;
+  return n > 0 ? n : e;
 }
