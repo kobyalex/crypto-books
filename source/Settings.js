@@ -44,11 +44,11 @@ function getCoins() {
 
     var coins = {};
 
-    for(i = 0; i < rows.length; i++) {
+    for (i = 0; i < rows.length; i++) {
         var ticker = rows[i][0].trim().toLowerCase();
         var name = rows[i][1].trim().toLowerCase().replace(/\s/g, "-");
 
-        if(ticker !== "" && name !== "") {
+        if (ticker !== "" && name !== "") {
             coins[ticker] = name;
         }
     }
@@ -81,11 +81,26 @@ function getStableCoins() {
         .filter(String);
 
     var fiat = getFiat();
-    if(coins.indexOf(fiat) === -1) {
+    if (coins.indexOf(fiat) === -1) {
         coins.push(fiat);
     }
 
     return coins.join('|').toLowerCase().split('|');
+}
+
+/**
+ * Gets pair tokens.
+ * <p>Gets left side of token pairs.
+ */
+function getPairTokens() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Pairs");
+    var tokens = sheet
+        .getRange("E3:E")
+        .getValues()
+        .filter(String);
+
+    return tokens.join('|').toLowerCase().split('|');
 }
 
 /**
@@ -113,4 +128,31 @@ function getSparklineAutoUpdate() {
     var active = SpreadsheetApp.getActive();
     var sheet = active.getSheetByName("Settings");
     return sheet.getRange("C14").getValue();
+}
+
+/**
+ * Gets Pairs Menu option setting.
+ */
+function getPairsMenuOption() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Settings");
+    return sheet.getRange("C20").getValue();
+}
+
+/**
+ * Gets Pairs Auto update setting.
+ */
+function getPairsAutoUpdate() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Settings");
+    return sheet.getRange("C21").getValue();
+}
+
+/**
+ * Gets CryptoCompare API key.
+ */
+function getCoinGeckoDemoKey() {
+    var active = SpreadsheetApp.getActive();
+    var sheet = active.getSheetByName("Settings");
+    return sheet.getRange("C25").getValue().toLowerCase();
 }

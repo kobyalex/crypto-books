@@ -3,11 +3,17 @@
  * <p>This is an implementation wrapper for API change capability.
  */
 function apiCoins(ui, fiat, ids, tickers) {
-    var market = geckoCoins(ui, fiat, ids);
+    // Added CoinGecko Demo API key by Koby
+    var market = undefined;
+    var geckoKey = getCoinGeckoDemoKey();
+    if (geckoKey != "") {
+        market = geckoCoinsDemo(ui, geckoKey, fiat, ids);
+    }
+    // var market = geckoCoins(ui, fiat, ids); // Removed that method by Koby
 
-    if(market == undefined || Object.keys(market).length == 0) {
+    if (market == undefined || Object.keys(market).length == 0) {
         var key = getCryptoCompareKey();
-        if(key != "") {
+        if (key != "") {
             market = cryptoCoins(ui, key, fiat, tickers);
         }
     }
@@ -23,10 +29,15 @@ function apiSparkline(ui, coin) {
     var sparkline = [];
 
     var key = getCryptoCompareKey();
-    if(key != "") {
+    if (key != "") {
         sparkline = cryptoSparkline(ui, key, coin);
         if (sparkline.length == 0) {
-            sparkline = geckoSparkline(ui, coin);
+            // Added CoinGecko Demo API key by Koby
+            var geckoKey = getCoinGeckoDemoKey();
+            if (geckoKey != "") {
+                sparkline = geckoSparklineDemo(ui, geckoKey, coin);
+            }
+            // sparkline = geckoSparkline(ui, coin);
         }
     }
 
@@ -38,22 +49,34 @@ function apiSparkline(ui, coin) {
  * <p>This is an implementation wrapper for API change capability.
  */
 function apiRate(ui, fiat, coin, date) {
+    var rate = undefined;
     var key = getCryptoCompareKey();
-    if(key != "") {
-        return cryptoRate(ui, key, fiat, coin, date);
+    if (key != "") {
+        rate = cryptoRate(ui, key, fiat, coin, date);
     }
-    return geckoRate(ui, fiat, coin, date);
+    // Added CoinGecko Demo API key by Koby
+    var geckoKey = getCoinGeckoDemoKey();
+    if (geckoKey != "") {
+        rate = geckoRateDemo(ui, geckoKey, fiat, coin, date);
+    }
+    return rate
 }
 
 /**
  * Gets coin flux.
  */
 function apiFlux(ui, fiat, coin, days, interval) {
-    var flux = geckoFlux(ui, fiat, coin, days, interval);
+    // Added CoinGecko Demo API key by Koby
+    var flux = undefined;
+    var geckoKey = getCoinGeckoDemoKey();
+    if (geckoKey != "") {
+        flux = geckoFluxDemo(ui, geckoKey, fiat, coin, days, interval);
+    }
+    // var flux = geckoFlux(ui, fiat, coin, days, interval);
 
-    if(flux == undefined || Object.keys(flux).length == 0) {
+    if (flux == undefined || Object.keys(flux).length == 0) {
         var key = getCryptoCompareKey();
-        if(key != "") {
+        if (key != "") {
             flux = cryptoFlux(ui, key, fiat, coin, days, interval);
         }
     }
